@@ -69,34 +69,34 @@ Table of Contents
      2.1.  Requirements Terminology  . . . . . . . . . . . . . . . .   3
      2.2.  Notations . . . . . . . . . . . . . . . . . . . . . . . .   3
      2.3.  Definitions . . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  The Basic PKI feature set . . . . . . . . . . . . . . . . . .   3
-   4.  Getting started and the Root level  . . . . . . . . . . . . .   4
+   3.  The Basic PKI Feature Set . . . . . . . . . . . . . . . . . .   3
+   4.  Getting Started and the Root Level  . . . . . . . . . . . . .   4
      4.1.  Setting up the Environment  . . . . . . . . . . . . . . .   4
      4.2.  Create the Root Certificate . . . . . . . . . . . . . . .   6
-   5.  The Intermediate level  . . . . . . . . . . . . . . . . . . .   6
+   5.  The Intermediate Level  . . . . . . . . . . . . . . . . . . .   6
      5.1.  Setting up the Intermediate Certificate Environment . . .   6
      5.2.  Create the Intermediate Certificate . . . . . . . . . . .   7
-     5.3.  Create a Server EE Certificate  . . . . . . . . . . . . .   9
+     5.3.  Create a Server EE Certificate  . . . . . . . . . . . . .   8
      5.4.  Create a Client EE Certificate  . . . . . . . . . . . . .   9
    6.  The 802.1AR Intermediate level  . . . . . . . . . . . . . . .  10
      6.1.  Setting up the 802.1AR Intermediate Certificate
            Environment . . . . . . . . . . . . . . . . . . . . . . .  10
      6.2.  Create the 802.1AR Intermediate Certificate . . . . . . .  11
      6.3.  Create an 802.1AR iDevID Certificate  . . . . . . . . . .  13
-   7.  Footnotes . . . . . . . . . . . . . . . . . . . . . . . . . .  14
-     7.1.  Certificate Serial Number . . . . . . . . . . . . . . . .  14
-     7.2.  subjectAltName support, or lack thereof . . . . . . . . .  15
-     7.3.  DER support, or lack thereof  . . . . . . . . . . . . . .  15
+   7.  Footnotes . . . . . . . . . . . . . . . . . . . . . . . . . .  15
+     7.1.  Certificate Serial Number . . . . . . . . . . . . . . . .  15
+     7.2.  subjectAltName support, or lack thereof . . . . . . . . .  16
+     7.3.  DER support, or lack thereof  . . . . . . . . . . . . . .  16
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  16
-   9.  Security Considerations . . . . . . . . . . . . . . . . . . .  16
-   10. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  16
-   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  16
+   9.  Security Considerations . . . . . . . . . . . . . . . . . . .  17
+   10. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  17
+   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  17
      11.1.  Normative References . . . . . . . . . . . . . . . . . .  17
-     11.2.  Informative References . . . . . . . . . . . . . . . . .  17
-   Appendix A.  OpenSSL config files . . . . . . . . . . . . . . . .  17
-     A.1.  OpenSSL Root config file  . . . . . . . . . . . . . . . .  17
-     A.2.  OpenSSL Intermediate config file  . . . . . . . . . . . .  20
-     A.3.  OpenSSL 802.1AR Intermediate config file  . . . . . . . .  23
+     11.2.  Informative References . . . . . . . . . . . . . . . . .  18
+   Appendix A.  OpenSSL config files . . . . . . . . . . . . . . . .  18
+     A.1.  OpenSSL Root config file  . . . . . . . . . . . . . . . .  18
+     A.2.  OpenSSL Intermediate Config File  . . . . . . . . . . . .  21
+     A.3.  OpenSSL 802.1AR Intermediate config file  . . . . . . . .  24
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  26
 
 1.  Introduction
@@ -123,7 +123,7 @@ Internet-Draft                  PKI Guide                    August 2017
    create such a PKI of ECDSA certificates.  The goal is that any
    developer or tester can follow these steps, create the basic objects
    needed and establish the validity of the standard/program design.
-   This guide can even be used to create a production PKi, though
+   This guide can even be used to create a production PKI, though
    additional steps need to be taken.  This could be very useful to a
    small vendor needing to include 802.1AR iDevIDs in their product.
 
@@ -148,9 +148,9 @@ Internet-Draft                  PKI Guide                    August 2017
 
    TBD
 
-3.  The Basic PKI feature set
+3.  The Basic PKI Feature Set
 
-   A basic pki has two levels of hierarchy: Root and Intermediate.  The
+   A basic PKI has two levels of hierarchy: Root and Intermediate.  The
    Root level has the greatest risk, and is the least used.  It only
    signs the Intermediate level signing certificate.  As such, once the
    Root level is created and signs the Intermediate level certificate it
@@ -177,13 +177,13 @@ Internet-Draft                  PKI Guide                    August 2017
    key, the public certificate, a database of all signed certificates,
    the certificate trust chain, and Intermediate level CRL.  It can also
    contain the End Entity public certificates.  The private key file
-   needs to be keep securely.  For example as with the Root level, a mSD
+   needs to be kept securely.  For example as with the Root level, a mSD
    image for an ARM computer could contain the complete Intermediate
    level.  This image is kept offline.  The End Entity CSR is copied to
    it, signed, and then the signed certificate and updated database are
    moved to the public image that lacks the private key.
 
-   For a simple test pki, all files can be kept on a single system that
+   For a simple test PKI, all files can be kept on a single system that
    is managed by the tester.
 
    End Entities create a key pair and a Certificate Signing Request
@@ -192,10 +192,10 @@ Internet-Draft                  PKI Guide                    August 2017
    certificate.  This certificate, along with the trust chain back to
    the root, is then returned to the End Entity.
 
-   There is more to a pki, but this suffices for most development and
+   There is more to a PKI, but this suffices for most development and
    testing needs.
 
-4.  Getting started and the Root level
+4.  Getting Started and the Root Level
 
    This guide was developed on a Fedora 26 armv7hl system (Cubieboard2
    SoC).  It should work on most Linux and similar systems.  All work
@@ -205,7 +205,7 @@ Internet-Draft                  PKI Guide                    August 2017
 
 4.1.  Setting up the Environment
 
-   The first step is to create the pki environment.  Modify the
+   The first step is to create the PKI environment.  Modify the
    variables to suit your needs.
 
 
@@ -249,24 +249,23 @@ Internet-Draft                  PKI Guide                    August 2017
    echo $DN
    export subjectAltName=email:postmaster@htt-consult.com
 
-
    Where:
 
-   dir
+   dir:
             Directory for certificate files
 
-   cadir
+   cadir:
             Directory for Root certificate files
 
-   Format
+   format:
             File encoding: PEM or DER
             At this time only PEM works
 
-   sn
+   sn:
             Serial Number length in bytes
             For a public CA the range is 8 to 19
 
-   The Serial Number length for a public pki ranges from 8 to 19 bytes.
+   The Serial Number length for a public PKI ranges from 8 to 19 bytes.
    The use of 19 rather than 20 is to accommodate the hex representation
    of the Serial Number.  If it has a one in the high order bit, DER
    encoding rules will place a 0x00 in front.
@@ -274,6 +273,7 @@ Internet-Draft                  PKI Guide                    August 2017
    The DN and SAN fields are examples.  Change them to appropriate
    values.  If you leave one blank, it will be left out of the
    Certificate.  "OU" above is an example of an empty DN object.
+
 
 
 
@@ -291,7 +291,7 @@ Internet-Draft                  PKI Guide                    August 2017
    and the Root certificate.  Included are commands to view the file
    contents.
 
-   # Create passworded keypair file
+   # Create Passworded Keypair File
 
    openssl genpkey -aes256 -algorithm ec\
        -pkeyopt ec_paramgen_curve:prime256v1\
@@ -317,13 +317,13 @@ Internet-Draft                  PKI Guide                    August 2017
    openssl x509 -purpose -inform $format\
         -in $dir/certs/ca.cert.$format -inform $format
 
-
-5.  The Intermediate level
+5.  The Intermediate Level
 
 5.1.  Setting up the Intermediate Certificate Environment
 
-   The next part is to create the Intermediate pki environment.  Modify
+   The next part is to create the Intermediate PKI environment.  Modify
    the variables to suit your needs.
+
 
 
 
@@ -352,7 +352,6 @@ Internet-Draft                  PKI Guide                    August 2017
    DN=$countryName$stateOrProvinceName$localityName$organizationName
    DN=$DN$organizationalUnitName$commonName
    echo $DN
-
 
    Create the file, $dir/openssl-intermediate.cnf from the contents in
    Appendix A.2.
@@ -389,12 +388,13 @@ Internet-Draft                  PKI Guide                    August 2017
 
 
 
+
 Moskowitz, et al.         Expires March 3, 2018                 [Page 7]
 
 Internet-Draft                  PKI Guide                    August 2017
 
 
-   # Create passworded keypair file
+   # Create Passworded Keypair File
 
    openssl genpkey -aes256 -algorithm ec\
        -pkeyopt ec_paramgen_curve:prime256v1 \
@@ -414,7 +414,7 @@ Internet-Draft                  PKI Guide                    August 2017
        -in $dir/csr/intermediate.csr.$format
 
 
-   # Create Intermediate Certificate file
+   # Create Intermediate Certificate File
 
    openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
    # Note 'openssl ca' does not support DER format
@@ -436,11 +436,11 @@ Internet-Draft                  PKI Guide                    August 2017
       $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
    chmod 444 $dir/certs/ca-chain.cert.$format
 
+5.3.  Create a Server EE Certificate
 
-
-
-
-
+   Here are the openssl commands to create a Server End Entity
+   certificate keypair, Server certificate signed request (CSR), and the
+   Server certificate.  Included are commands to view the file contents.
 
 
 
@@ -449,12 +449,6 @@ Moskowitz, et al.         Expires March 3, 2018                 [Page 8]
 
 Internet-Draft                  PKI Guide                    August 2017
 
-
-5.3.  Create a Server EE Certificate
-
-   Here are the openssl commands to create a Server End Entity
-   certificate keypair, Server certificate signed request (CSR), and the
-   Server certificate.  Included are commands to view the file contents.
 
    commonName=
    DN=$countryName$stateOrProvinceName$localityName
@@ -487,12 +481,18 @@ Internet-Draft                  PKI Guide                    August 2017
         $dir/certs/$serverfqdn.cert.$format
    openssl x509 -noout -text -in $dir/certs/$serverfqdn.cert.$format
 
-
 5.4.  Create a Client EE Certificate
 
    Here are the openssl commands to create a Client End Entity
    certificate keypair, Client certificate signed request (CSR), and the
    Client certificate.  Included are commands to view the file contents.
+
+
+
+
+
+
+
 
 
 
@@ -543,8 +543,8 @@ Internet-Draft                  PKI Guide                    August 2017
 
 6.1.  Setting up the 802.1AR Intermediate Certificate Environment
 
-   The next part is to create the 802.1AR Intermediate pki environment.
-   This is very similar to the Intermediate pki environment.  Modify the
+   The next part is to create the 802.1AR Intermediate PKI environment.
+   This is very similar to the Intermediate PKI environment.  Modify the
    variables to suit your needs.
 
 
@@ -680,6 +680,56 @@ Internet-Draft                  PKI Guide                    August 2017
    keypair, iDevID certificate signed request (CSR), and the iDevID
    certificate.  Included are commands to view the file contents.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 13]
+
+Internet-Draft                  PKI Guide                    August 2017
+
+
    DevID=Wt1234
    countryName=
    stateOrProvinceName=
@@ -722,20 +772,18 @@ Internet-Draft                  PKI Guide                    August 2017
    chmod 444 $dir/certs/$DevID.cert.$format
 
    openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 13]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
         $dir/certs/$DevID.cert.$format
    openssl x509 -noout -text -in $dir/certs/$DevID.cert.$format
    openssl asn1parse -i -in $dir/certs/$DevID.cert.pem
 
    # offset of start of hardwareModuleName and use that in place of 493
    openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 14]
+
+Internet-Draft                  PKI Guide                    August 2017
 
 
 7.  Footnotes
@@ -747,7 +795,7 @@ Internet-Draft                  PKI Guide                    August 2017
 7.1.  Certificate Serial Number
 
    The certificate serial number's role is to provide yet another way to
-   maintain uniqueness of certificates within a pki as well as a way to
+   maintain uniqueness of certificates within a PKI as well as a way to
    index them in a data store.  It has taken on other roles, most
    notably as a defense.
 
@@ -778,18 +826,21 @@ Internet-Draft                  PKI Guide                    August 2017
    operate this block cipher in CTR mode, with a proper secret key and
    secret starting counter.  That way, no collision detection is
    necessary, you'll be able to generate 2^(k/2) unique k bits longs
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 14]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    serial numbers (in fact, you can generate 2^k unique serial numbers,
    but after 2^(k/2) you lose some security guarantees).
 
    With 3DES, k=64, and with AES, k=128.
+
+
+
+
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 15]
+
+Internet-Draft                  PKI Guide                    August 2017
+
 
 7.2.  subjectAltName support, or lack thereof
 
@@ -811,7 +862,6 @@ Internet-Draft                  PKI Guide                    August 2017
       <(printf "[SAN]\nsubjectAltName=DNS:foo.com,DNS:www.foo.com"))\
      -out domain.csr
 
-
 7.3.  DER support, or lack thereof
 
    The long, hard-fought battle with openssl to create a full DER pki
@@ -829,22 +879,24 @@ Internet-Draft                  PKI Guide                    August 2017
 
    openssl x509 -outform der -in certificate.pem -out certificate.der
 
-
    This should also work for the keypair.  However, in a highly
    constrained device it may make more sense to just store the raw
    keypair in the device's very limited secure storage.
 
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 15]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
 8.  IANA Considerations
 
    TBD.  May be nothing for IANA.
+
+
+
+
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 16]
+
+Internet-Draft                  PKI Guide                    August 2017
+
 
 9.  Security Considerations
 
@@ -886,24 +938,21 @@ Internet-Draft                  PKI Guide                    August 2017
 
 11.  References
 
-
-
-
-
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 16]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
 11.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
               editor.org/info/rfc2119>.
+
+
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 17]
+
+Internet-Draft                  PKI Guide                    August 2017
+
 
 11.2.  Informative References
 
@@ -946,14 +995,6 @@ A.1.  OpenSSL Root config file
    serial            = $dir/serial
    RANDFILE          = $dir/private/.rand
 
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 17]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    # The root key and root certificate.
    private_key       = $cadir/private/ca.key.$format
    certificate       = $cadir/certs/ca.cert.$format
@@ -961,6 +1002,14 @@ Internet-Draft                  PKI Guide                    August 2017
    # For certificate revocation lists.
    crlnumber         = $dir/crlnumber
    crl               = $dir/crl/ca.crl.pem
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 18]
+
+Internet-Draft                  PKI Guide                    August 2017
+
+
    crl_extensions    = crl_ext
    default_crl_days  = 30
 
@@ -1002,14 +1051,6 @@ Internet-Draft                  PKI Guide                    August 2017
    req_extensions      = req_ext
 
    # SHA-1 is deprecated, so use SHA-2 instead.
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 18]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    default_md          = sha256
 
    # Extension to add when the -x509 option is used.
@@ -1017,6 +1058,14 @@ Internet-Draft                  PKI Guide                    August 2017
 
    [ req_distinguished_name ]
    # See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 19]
+
+Internet-Draft                  PKI Guide                    August 2017
+
+
    countryName                     = Country Name (2 letter code)
    stateOrProvinceName             = State or Province Name
    localityName                    = Locality Name
@@ -1058,21 +1107,22 @@ Internet-Draft                  PKI Guide                    August 2017
    [ ocsp ]
    # Extension for OCSP signing certificates (`man ocsp`).
    basicConstraints = CA:FALSE
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 19]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    subjectKeyIdentifier = hash
    authorityKeyIdentifier = keyid,issuer
    keyUsage = critical, digitalSignature
    extendedKeyUsage = critical, OCSPSigning
 
 
-A.2.  OpenSSL Intermediate config file
+
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 20]
+
+Internet-Draft                  PKI Guide                    August 2017
+
+
+A.2.  OpenSSL Intermediate Config File
 
    The following is the openssl-intermediate.cnf file contents
 
@@ -1114,20 +1164,20 @@ A.2.  OpenSSL Intermediate config file
    default_days      = 375
    preserve          = no
    policy            = policy_loose
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 20]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    copy_extensions   = copy
 
    [ policy_strict ]
    # The root CA should only sign intermediate certificates that match.
    # See the POLICY FORMAT section of `man ca`.
    countryName             = match
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 21]
+
+Internet-Draft                  PKI Guide                    August 2017
+
+
    stateOrProvinceName     = match
    organizationName        = match
    organizationalUnitName  = optional
@@ -1135,7 +1185,7 @@ Internet-Draft                  PKI Guide                    August 2017
 
    [ policy_loose ]
    # Allow the intermediate CA to sign a more
-   #  diverse range of certificates.
+   # diverse range of certificates.
    # See the POLICY FORMAT section of the `ca` man page.
    countryName             = optional
    stateOrProvinceName     = optional
@@ -1170,20 +1220,20 @@ Internet-Draft                  PKI Guide                    August 2017
 
    # Optionally, specify some defaults.
    # countryName_default             = US
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 21]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    # stateOrProvinceName_default     = MI
    # localityName_default            = Oak Park
    # 0.organizationName_default      = HTT Consulting
    # organizationalUnitName_default  =
 
    [ req_ext ]
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 22]
+
+Internet-Draft                  PKI Guide                    August 2017
+
+
    subjectAltName = $ENV::subjectAltName
 
    [ v3_ca ]
@@ -1226,22 +1276,21 @@ Internet-Draft                  PKI Guide                    August 2017
    # Extension for CRLs (`man x509v3_config`).
    authorityKeyIdentifier=keyid:always
 
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 22]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    [ ocsp ]
    # Extension for OCSP signing certificates (`man ocsp`).
    basicConstraints = CA:FALSE
    subjectKeyIdentifier = hash
    authorityKeyIdentifier = keyid,issuer
    keyUsage = critical, digitalSignature
-   extendedKeyUsage = critical, OCSPSigning
 
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 23]
+
+Internet-Draft                  PKI Guide                    August 2017
+
+
+   extendedKeyUsage = critical, OCSPSigning
 
 A.3.  OpenSSL 802.1AR Intermediate config file
 
@@ -1282,14 +1331,6 @@ A.3.  OpenSSL 802.1AR Intermediate config file
    default_md        = sha256
 
    name_opt          = ca_default
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 23]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    cert_opt          = ca_default
    default_enddate   = 99991231235959Z # per IEEE 802.1AR
    preserve          = no
@@ -1297,6 +1338,14 @@ Internet-Draft                  PKI Guide                    August 2017
    copy_extensions   = copy
 
    [ policy_strict ]
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 24]
+
+Internet-Draft                  PKI Guide                    August 2017
+
+
    # The root CA should only sign 8021ARintermediate
    #   certificates that match.
    # See the POLICY FORMAT section of `man ca`.
@@ -1338,20 +1387,20 @@ Internet-Draft                  PKI Guide                    August 2017
    localityName                    = Locality Name
    0.organizationName              = Organization Name
    organizationalUnitName          = Organizational Unit Name
-
-
-
-Moskowitz, et al.         Expires March 3, 2018                [Page 24]
-
-Internet-Draft                  PKI Guide                    August 2017
-
-
    commonName                      = Common Name
    serialNumber                    = Device Serial Number
 
    # Optionally, specify some defaults.
    0.organizationName_default      = HTT Consulting
    organizationalUnitName_default  = Devices
+
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 25]
+
+Internet-Draft                  PKI Guide                    August 2017
+
 
    [ req_ext ]
    subjectAltName = otherName:1.3.6.1.5.5.7.8.4;SEQ:hmodname
@@ -1395,14 +1444,19 @@ Internet-Draft                  PKI Guide                    August 2017
    keyUsage = critical, digitalSignature
    extendedKeyUsage = critical, OCSPSigning
 
+Authors' Addresses
 
 
-Moskowitz, et al.         Expires March 3, 2018                [Page 25]
+
+
+
+
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 26]
 
 Internet-Draft                  PKI Guide                    August 2017
 
-
-Authors' Addresses
 
    Robert Moskowitz
    Huawei
@@ -1453,4 +1507,6 @@ Authors' Addresses
 
 
 
-Moskowitz, et al.         Expires March 3, 2018                [Page 26]
+
+
+Moskowitz, et al.         Expires March 3, 2018                [Page 27]
