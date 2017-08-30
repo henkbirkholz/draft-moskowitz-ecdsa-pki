@@ -1,0 +1,1431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>Guide for building an ECC pki</title>
+
+  
+<style type="text/css">/*<![CDATA[*/
+@viewport {
+  zoom: 1.0;
+  width: extend-to-zoom;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+
+@media screen and (min-width: 1024px) {
+  ul.toc, #rfc\.toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 525px);
+    width: 300px;
+    z-index: 1;
+  }
+  #rfc\.toc {
+    top: 15px;
+  }
+  ul.toc {
+    top: 80px;
+    overflow: auto;
+  }
+
+  body {
+    padding-right: 350px;
+  }
+}
+
+body {
+  font: 15px "Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: #333;
+  font-size-adjust: 0.5;
+  line-height: 130%;
+  margin: 25px auto;
+  max-width: 724px;
+}
+
+.title, .filename, h1, h2, h3, h4 {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size-adjust: 0.5;
+  font-weight: 500;
+  color: #333;
+  line-height: 100%;
+  margin: 0.8em 0 0.3em;
+}
+.title { font-size: 36px; }
+h1 { font-size: 30px; }
+h2 { font-size: 24px; }
+h3, h4 { font-size: 18px; }
+h1 a[href], h2 a[href], h3 a[href], h4 a[href] {
+  color: #333;
+}
+
+ul.toc li {
+  list-style: none;
+  text-indent: -2.5em;
+  padding-left: 2.5em;
+  padding-bottom: 5px;
+  margin: 0;
+}
+ul.toc ul {
+  margin: 0;
+}
+/* xml2rfc nests ul directly inside ul which messes with the style badly */
+ul.toc, ul.toc>ul, ul.toc ul>ul {
+  margin: 0 0 0 1.5em;
+}
+
+table {
+  margin-left: 0em;
+  border-collapse: collapse;
+}
+th {
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+  vertical-align: top;
+}
+tr:nth-child(2n+1) > td,
+tr:nth-child(2n+1) > th {
+  background-color: #f9f9f9;
+}
+td.reference {
+  max-width: 200px;
+  border-top: none;
+  padding-right: 1em;
+}
+.right {
+  text-align: right;
+}
+
+
+table.header {
+  width: 100%;
+}
+table.header td {
+  border: none;
+  background-color: transparent;
+  color: black;
+}
+.filename {
+  color: rgb(119, 119, 119);
+  font-size: 23px;
+  font-weight: normal;
+  height: auto;
+  line-height: 100%;
+}
+#rfc\.abstract+p {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 130%;
+}
+
+samp, tt, code, pre {
+  font: 11pt consolas, monospace;
+  font-size-adjust: none;
+}
+pre {
+  background-color: #eee;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  padding: 5px;
+  margin: 5px;
+}
+.figure {
+  font-style: italic;
+  margin: 0 1.5em;
+}
+
+address {
+  margin: 10px 0 0;
+}
+.vcard {
+  font-style: normal;
+}
+.vcardline {
+  display: block;
+}
+.vcardline .fn {
+  font-weight: bold;
+}
+.vcardline .hidden {
+  display: none;
+}
+
+dl {
+  margin-left: 1em;
+}
+dl.dl-horizontal: {
+  margin-left: 0;
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.nohang > dt {
+  float: none;
+}
+dl > dd {
+  margin-bottom: .5em;
+}
+dl.compact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+ul.empty {
+  list-style-type: none;
+}
+ul.empty li {
+  margin-top: .5em;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #2a6496;
+}
+a[href]:hover {
+  background-color: #eee;
+}
+
+ol, ul, li, p {
+  padding: 0;
+  margin: 0.5em 0 0.5em 2em;
+}
+li, p {
+  margin-left: 0;
+}
+address {
+  font-style: normal;
+}
+
+.github-fork-ribbon-wrapper {
+  display: none;
+}
+@media screen and (min-width: 800px) {
+  /* "Fork me on GitHub" CSS ribbon based on
+   * https://github.com/simonwhitaker/github-fork-ribbon-css
+   */
+  .github-fork-ribbon {
+    position: absolute;
+    padding: 2px 0;
+    background-color: #a00;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+    font: 700 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    pointer-events: auto;
+
+    top: 38px;
+    right: -45px;
+
+    transform: rotate(45deg);
+  }
+
+  .github-fork-ribbon a[href],
+  .github-fork-ribbon a[href]:hover {
+    color: #fff;
+    background-color: transparent;
+    text-decoration: none;
+    text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
+    text-align: center;
+
+    width: 190px;
+    line-height: 18px;
+
+    display: inline-block;
+    padding: 2px 0;
+
+    border: 1.5px dotted #fff;
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .github-fork-ribbon-wrapper {
+    display: block;
+    width: 130px;
+    height: 130px;
+    position: absolute;
+    overflow: hidden;
+    top: 0; right: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+}
+@media screen and (min-width: 1000px) {
+  .github-fork-ribbon-wrapper {
+    position: fixed;
+  }
+  /*]]>*/</style>
+
+
+  <link href="#rfc.toc" rel="Contents">
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction">
+<link href="#rfc.section.2" rel="Chapter" title="2 Terms and Definitions">
+<link href="#rfc.section.2.1" rel="Chapter" title="2.1 Requirements Terminology">
+<link href="#rfc.section.2.2" rel="Chapter" title="2.2 Notations">
+<link href="#rfc.section.2.3" rel="Chapter" title="2.3 Definitions">
+<link href="#rfc.section.3" rel="Chapter" title="3 The Basic PKI feature set">
+<link href="#rfc.section.4" rel="Chapter" title="4 Getting started and the Root level">
+<link href="#rfc.section.4.1" rel="Chapter" title="4.1 Setting up the Environment">
+<link href="#rfc.section.4.2" rel="Chapter" title="4.2 Create the Root Certificate">
+<link href="#rfc.section.5" rel="Chapter" title="5 The Intermediate level">
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Setting up the Intermediate Certificate Environment">
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Create the Intermediate Certificate">
+<link href="#rfc.section.5.3" rel="Chapter" title="5.3 Create a Server EE Certificate">
+<link href="#rfc.section.5.4" rel="Chapter" title="5.4 Create a Client EE Certificate">
+<link href="#rfc.section.6" rel="Chapter" title="6 The 802.1AR Intermediate level">
+<link href="#rfc.section.6.1" rel="Chapter" title="6.1 Setting up the 802.1AR Intermediate Certificate Environment">
+<link href="#rfc.section.6.2" rel="Chapter" title="6.2 Create the 802.1AR Intermediate Certificate">
+<link href="#rfc.section.6.3" rel="Chapter" title="6.3 Create an 802.1AR iDevID Certificate">
+<link href="#rfc.section.7" rel="Chapter" title="7 Footnotes">
+<link href="#rfc.section.7.1" rel="Chapter" title="7.1 Certificate Serial Number">
+<link href="#rfc.section.7.2" rel="Chapter" title="7.2 subjectAltName support, or lack thereof">
+<link href="#rfc.section.7.3" rel="Chapter" title="7.3 DER support, or lack thereof">
+<link href="#rfc.section.8" rel="Chapter" title="8 IANA Considerations">
+<link href="#rfc.section.9" rel="Chapter" title="9 Security Considerations">
+<link href="#rfc.section.10" rel="Chapter" title="10 Acknowledgments">
+<link href="#rfc.references" rel="Chapter" title="11 References">
+<link href="#rfc.references.1" rel="Chapter" title="11.1 Normative References">
+<link href="#rfc.references.2" rel="Chapter" title="11.2 Informative References">
+<link href="#rfc.appendix.A" rel="Chapter" title="A OpenSSL config files">
+<link href="#rfc.appendix.A.1" rel="Chapter" title="A.1 OpenSSL Root config file">
+<link href="#rfc.appendix.A.2" rel="Chapter" title="A.2 OpenSSL Intermediate config file">
+<link href="#rfc.appendix.A.3" rel="Chapter" title="A.3 OpenSSL 802.1AR Intermediate config file">
+<link href="#rfc.authors" rel="Chapter">
+
+
+  <meta name="generator" content="xml2rfc version 2.7.0 - http://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Moskowitz, R., Birkholz, H., and L. Xia" />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-moskowitz-ecdsa-pki-latest" />
+  <meta name="dct.issued" scheme="ISO8601" content="2017-8-30" />
+  <meta name="dct.abstract" content="This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL.  All certificates in this guide are ECDSA, P-256, with SHA256 certificates.  Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates." />
+  <meta name="description" content="This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL.  All certificates in this guide are ECDSA, P-256, with SHA256 certificates.  Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates." />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+<td class="left">wg TBD</td>
+<td class="right">R. Moskowitz</td>
+</tr>
+<tr>
+<td class="left">Internet-Draft</td>
+<td class="right">Huawei</td>
+</tr>
+<tr>
+<td class="left">Intended status: Informational</td>
+<td class="right">H. Birkholz</td>
+</tr>
+<tr>
+<td class="left">Expires: March 3, 2018</td>
+<td class="right">Fraunhofer SIT</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">L. Xia</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">Huawei</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">August 30, 2017</td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">Guide for building an ECC pki<br />
+  <span class="filename">draft-moskowitz-ecdsa-pki-latest</span></p>
+  
+  <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
+<p>This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL.  All certificates in this guide are ECDSA, P-256, with SHA256 certificates.  Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates.</p>
+<h1 id="rfc.status"><a href="#rfc.status">Status of This Memo</a></h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on March 3, 2018.</p>
+<h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
+<p>Copyright (c) 2017 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a>
+</li>
+<li>2.   <a href="#rfc.section.2">Terms and Definitions</a>
+</li>
+<ul><li>2.1.   <a href="#rfc.section.2.1">Requirements Terminology</a>
+</li>
+<li>2.2.   <a href="#rfc.section.2.2">Notations</a>
+</li>
+<li>2.3.   <a href="#rfc.section.2.3">Definitions</a>
+</li>
+</ul><li>3.   <a href="#rfc.section.3">The Basic PKI feature set</a>
+</li>
+<li>4.   <a href="#rfc.section.4">Getting started and the Root level</a>
+</li>
+<ul><li>4.1.   <a href="#rfc.section.4.1">Setting up the Environment</a>
+</li>
+<li>4.2.   <a href="#rfc.section.4.2">Create the Root Certificate</a>
+</li>
+</ul><li>5.   <a href="#rfc.section.5">The Intermediate level</a>
+</li>
+<ul><li>5.1.   <a href="#rfc.section.5.1">Setting up the Intermediate Certificate Environment</a>
+</li>
+<li>5.2.   <a href="#rfc.section.5.2">Create the Intermediate Certificate</a>
+</li>
+<li>5.3.   <a href="#rfc.section.5.3">Create a Server EE Certificate</a>
+</li>
+<li>5.4.   <a href="#rfc.section.5.4">Create a Client EE Certificate</a>
+</li>
+</ul><li>6.   <a href="#rfc.section.6">The 802.1AR Intermediate level</a>
+</li>
+<ul><li>6.1.   <a href="#rfc.section.6.1">Setting up the 802.1AR Intermediate Certificate Environment</a>
+</li>
+<li>6.2.   <a href="#rfc.section.6.2">Create the 802.1AR Intermediate Certificate</a>
+</li>
+<li>6.3.   <a href="#rfc.section.6.3">Create an 802.1AR iDevID Certificate</a>
+</li>
+</ul><li>7.   <a href="#rfc.section.7">Footnotes</a>
+</li>
+<ul><li>7.1.   <a href="#rfc.section.7.1">Certificate Serial Number</a>
+</li>
+<li>7.2.   <a href="#rfc.section.7.2">subjectAltName support, or lack thereof</a>
+</li>
+<li>7.3.   <a href="#rfc.section.7.3">DER support, or lack thereof</a>
+</li>
+</ul><li>8.   <a href="#rfc.section.8">IANA Considerations</a>
+</li>
+<li>9.   <a href="#rfc.section.9">Security Considerations</a>
+</li>
+<li>10.   <a href="#rfc.section.10">Acknowledgments</a>
+</li>
+<li>11.   <a href="#rfc.references">References</a>
+</li>
+<ul><li>11.1.   <a href="#rfc.references.1">Normative References</a>
+</li>
+<li>11.2.   <a href="#rfc.references.2">Informative References</a>
+</li>
+</ul><li>Appendix A.   <a href="#rfc.appendix.A">OpenSSL config files</a>
+</li>
+<ul><li>A.1.   <a href="#rfc.appendix.A.1">OpenSSL Root config file</a>
+</li>
+<li>A.2.   <a href="#rfc.appendix.A.2">OpenSSL Intermediate config file</a>
+</li>
+<li>A.3.   <a href="#rfc.appendix.A.3">OpenSSL 802.1AR Intermediate config file</a>
+</li>
+</ul><li><a href="#rfc.authors">Authors' Addresses</a>
+</li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1">
+<a href="#rfc.section.1">1.</a> <a href="#intro" id="intro">Introduction</a>
+</h1>
+<p id="rfc.section.1.p.1">The IETF has a plethora of security solutions targeted at IoT.  Yet all too many IoT products are deployed with no or improperly configured security.  In particular resource constrained IoT devices and non-IP IoT networks have not been well served in the IETF.</p>
+<p id="rfc.section.1.p.2">Additionally, more IETF (e.g. DOTS, NETCONF) efforts are requiring secure identities, but are vague on the nature of these identities other than to recommend use of X.509 digital certificates and perhaps TLS.</p>
+<p id="rfc.section.1.p.3">This effort provides the steps, using the openSSL application, to create such a PKI of ECDSA certificates.  The goal is that any developer or tester can follow these steps, create the basic objects needed and establish the validity of the standard/program design.  This guide can even be used to create a production PKi, though additional steps need to be taken.  This could be very useful to a small vendor needing to include 802.1AR iDevIDs in their product.</p>
+<p id="rfc.section.1.p.4">This guide was tested with openSSL 1.1.0f on Fedora 26 and creates PEM-based certificates.  DER based certificates fails (see <a href="#DER" class="xref">Section 7.3</a>). Also, at this time, CRL and OCSP support is for future work.</p>
+<h1 id="rfc.section.2">
+<a href="#rfc.section.2">2.</a> <a href="#terms" id="terms">Terms and Definitions</a>
+</h1>
+<h1 id="rfc.section.2.1">
+<a href="#rfc.section.2.1">2.1.</a> <a href="#requirements-terminology" id="requirements-terminology">Requirements Terminology</a>
+</h1>
+<p id="rfc.section.2.1.p.1">The key words &#8220;MUST&#8221;, &#8220;MUST NOT&#8221;, &#8220;REQUIRED&#8221;, &#8220;SHALL&#8221;, &#8220;SHALL NOT&#8221;, &#8220;SHOULD&#8221;, &#8220;SHOULD NOT&#8221;, &#8220;RECOMMENDED&#8221;, &#8220;MAY&#8221;, and &#8220;OPTIONAL&#8221; in this document are to be interpreted as described in <a href="#RFC2119" class="xref">RFC 2119</a>.</p>
+<h1 id="rfc.section.2.2">
+<a href="#rfc.section.2.2">2.2.</a> <a href="#notations" id="notations">Notations</a>
+</h1>
+<p id="rfc.section.2.2.p.1">This section will contain notations</p>
+<h1 id="rfc.section.2.3">
+<a href="#rfc.section.2.3">2.3.</a> <a href="#definitions" id="definitions">Definitions</a>
+</h1>
+<p id="rfc.section.2.3.p.1">TBD</p>
+<h1 id="rfc.section.3">
+<a href="#rfc.section.3">3.</a> <a href="#BasicPKI" id="BasicPKI">The Basic PKI feature set</a>
+</h1>
+<p id="rfc.section.3.p.1">A basic pki has two levels of hierarchy: Root and Intermediate. The Root level has the greatest risk, and is the least used.  It only signs the Intermediate level signing certificate.  As such, once the Root level is created and signs the Intermediate level certificate it can be locked up.  In fact, the Root level could exist completely on a mSD boot card for an ARM small computer like a RaspberryPi.  A copy of this card came be made and securely stored in a different location.</p>
+<p id="rfc.section.3.p.2">The Root level contains the Root certificate private key, a database of all signed certificates, and  the public certificate.  It can also contain the Intermediate level public certificate and a Root level CRL.</p>
+<p id="rfc.section.3.p.3">The Intermediate level contains the Intermediate certificate private key, the public certificate, a database of all signed certificates, the certificate trust chain, and Intermediate level CRL.  It can also contain the End Entity public certificates.  The private key file needs to be keep securely.  For example as with the Root level, a mSD image for an ARM computer could contain the complete Intermediate level. This image is kept offline.  The End Entity CSR is copied to it, signed, and then the signed certificate and updated database are moved to the public image that lacks the private key.</p>
+<p id="rfc.section.3.p.4">For a simple test pki, all files can be kept on a single system that is managed by the tester.</p>
+<p id="rfc.section.3.p.5">End Entities create a key pair and a Certificate Signing Request (CSR).  The private key is stored securely.  The CSR is delivered to the Intermediate level which uses the CSR to create the End Entity certificate.  This certificate, along with the trust chain back to the root, is then returned to the End Entity.</p>
+<p id="rfc.section.3.p.6">There is more to a pki, but this suffices for most development and testing needs.</p>
+<h1 id="rfc.section.4">
+<a href="#rfc.section.4">4.</a> <a href="#RootLevel" id="RootLevel">Getting started and the Root level</a>
+</h1>
+<p id="rfc.section.4.p.1">This guide was developed on a Fedora 26 armv7hl system (Cubieboard2 SoC).  It should work on most Linux and similar systems.  All work was done in a terminal window with extensive &#8220;cutting and pasting&#8221; from a draft guide into the terminal window.  Users of this guide may find different behaviors based on their system.</p>
+<h1 id="rfc.section.4.1">
+<a href="#rfc.section.4.1">4.1.</a> <a href="#FirstStep" id="FirstStep">Setting up the Environment</a>
+</h1>
+<p id="rfc.section.4.1.p.1">The first step is to create the pki environment.  Modify the variables to suit your needs.</p>
+<pre>
+export dir=/root/ca
+export cadir=/root/ca
+export format=pem
+mkdir $dir
+cd $dir
+mkdir certs crl csr newcerts private
+chmod 700 private
+touch index.txt
+touch serial
+sn=8
+
+countryName="/C=US"
+stateOrProvinceName="/ST=MI"
+localityName="/L=Oak Park"
+organizationName="/O=HTT Consulting"
+#organizationalUnitName="/OU="
+organizationalUnitName=
+commonName="/CN=Root CA"
+DN=$countryName$stateOrProvinceName$localityName
+DN=$DN$organizationName$organizationalUnitName$commonName
+echo $DN
+export subjectAltName=email:postmaster@htt-consult.com
+
+</pre>
+<p id="rfc.section.4.1.p.2">Where:</p>
+<p></p>
+
+<dl>
+<dt>dir</dt>
+<dd style="margin-left: 9">
+<br> Directory for certificate files</dd>
+<dt>cadir</dt>
+<dd style="margin-left: 9">
+<br> Directory for Root certificate files</dd>
+<dt>Format</dt>
+<dd style="margin-left: 9">
+<br> File encoding:  PEM or DER <br> At this time only PEM works</dd>
+<dt>sn</dt>
+<dd style="margin-left: 9">
+<br> Serial Number length in bytes <br> For a public CA the range is 8 to 19</dd>
+</dl>
+<p id="rfc.section.4.1.p.4">The Serial Number length for a public pki ranges from 8 to 19 bytes.  The use of 19 rather than 20 is to accommodate the hex representation of the Serial Number.  If it has a one in the high order bit, DER encoding rules will place a 0x00 in front.</p>
+<p id="rfc.section.4.1.p.5">The DN and SAN fields are examples.  Change them to appropriate values.  If you leave one blank, it will be left out of the Certificate.  &#8220;OU&#8221; above is an example of an empty DN object.</p>
+<p id="rfc.section.4.1.p.6">Create the file, $dir/openssl-root.cnf from the contents in <a href="#Rootconfig" class="xref">Appendix A.1</a>.</p>
+<h1 id="rfc.section.4.2">
+<a href="#rfc.section.4.2">4.2.</a> <a href="#RootCert" id="RootCert">Create the Root Certificate</a>
+</h1>
+<p id="rfc.section.4.2.p.1">Next are the openssl commands to create the Root certificate keypair, and the Root certificate.  Included are commands to view the file contents.</p>
+<pre>
+# Create passworded keypair file
+
+openssl genpkey -aes256 -algorithm ec\
+    -pkeyopt ec_paramgen_curve:prime256v1\
+    -outform $format -pkeyopt ec_param_enc:named_curve\
+    -out $dir/private/ca.key.$format
+chmod 400 $dir/private/ca.key.$format
+openssl pkey -inform $format -in private/ca.key.$format -text -noout
+
+# Create Self-signed Root Certificate file
+# 7300 days = 20 years; Intermediate CA is 10 years.
+
+openssl req -config $dir/openssl-root.cnf\
+     -set_serial 0x$(openssl rand -hex $sn)\
+     -keyform $format -outform $format\
+     -key $dir/private/ca.key.$format -subj "$DN"\
+     -new -x509 -days 7300 -sha256 -extensions v3_ca\
+     -out $dir/certs/ca.cert.$format
+
+#
+
+openssl x509 -inform $format -in $dir/certs/ca.cert.$format\
+     -text -noout
+openssl x509 -purpose -inform $format\
+     -in $dir/certs/ca.cert.$format -inform $format
+
+</pre>
+<h1 id="rfc.section.5">
+<a href="#rfc.section.5">5.</a> <a href="#IntermediateLevel" id="IntermediateLevel">The Intermediate level</a>
+</h1>
+<h1 id="rfc.section.5.1">
+<a href="#rfc.section.5.1">5.1.</a> <a href="#NextStep" id="NextStep">Setting up the Intermediate Certificate Environment</a>
+</h1>
+<p id="rfc.section.5.1.p.1">The next part is to create the Intermediate pki environment.  Modify the variables to suit your needs.</p>
+<pre>
+export dir=$cadir/intermediate
+mkdir $dir
+cd $dir
+mkdir certs crl csr newcerts private
+chmod 700 private
+touch index.txt
+sn=8 # hex 8 is minimum, 19 is maximum
+echo 1000 &gt; $dir/crlnumber
+
+# cd $dir
+commonName="/CN=Signing CA"
+DN=$countryName$stateOrProvinceName$localityName$organizationName
+DN=$DN$organizationalUnitName$commonName
+echo $DN
+
+</pre>
+<p id="rfc.section.5.1.p.2">Create the file, $dir/openssl-intermediate.cnf from the contents in <a href="#Intermediateconfig" class="xref">Appendix A.2</a>.</p>
+<h1 id="rfc.section.5.2">
+<a href="#rfc.section.5.2">5.2.</a> <a href="#IntermediateCert" id="IntermediateCert">Create the Intermediate Certificate</a>
+</h1>
+<p id="rfc.section.5.2.p.1">Here are the openssl commands to create the Intermediate certificate keypair, Intermediate certificate signed request (CSR), and the Intermediate certificate.  Included are commands to view the file contents.</p>
+<pre>
+# Create passworded keypair file
+
+openssl genpkey -aes256 -algorithm ec\
+    -pkeyopt ec_paramgen_curve:prime256v1 \
+    -outform $format -pkeyopt ec_param_enc:named_curve\
+    -out $dir/private/intermediate.key.$format
+chmod 400 $dir/private/intermediate.key.$format
+openssl pkey -inform $format\
+    -in $dir/private/intermediate.key.$format -text -noout
+
+# Create the CSR
+
+openssl req -config $cadir/openssl-root.cnf\
+    -key $dir/private/intermediate.key.$format \
+    -keyform $format -outform $format -subj "$DN" -new -sha256\
+    -out $dir/csr/intermediate.csr.$format
+openssl req -text -noout -verify -inform $format\
+    -in $dir/csr/intermediate.csr.$format
+
+
+# Create Intermediate Certificate file
+
+openssl rand -hex $sn &gt; $dir/serial # hex 8 is minimum, 19 is maximum
+# Note 'openssl ca' does not support DER format
+openssl ca -config $cadir/openssl-root.cnf -days 3650\
+    -extensions v3_intermediate_ca -notext -md sha256 \
+    -in $dir/csr/intermediate.csr.$format\
+    -out $dir/certs/intermediate.cert.pem
+
+chmod 444 $dir/certs/intermediate.cert.$format
+
+openssl verify -CAfile $cadir/certs/ca.cert.$format\
+     $dir/certs/intermediate.cert.$format
+
+openssl x509 -noout -text -in $dir/certs/intermediate.cert.$format
+
+# Create the certificate chain file
+
+cat $dir/certs/intermediate.cert.$format\
+   $cadir/certs/ca.cert.$format &gt; $dir/certs/ca-chain.cert.$format
+chmod 444 $dir/certs/ca-chain.cert.$format
+
+
+</pre>
+<h1 id="rfc.section.5.3">
+<a href="#rfc.section.5.3">5.3.</a> <a href="#ServerCert" id="ServerCert">Create a Server EE Certificate</a>
+</h1>
+<p id="rfc.section.5.3.p.1">Here are the openssl commands to create a Server End Entity certificate keypair, Server certificate signed request (CSR), and the Server certificate.  Included are commands to view the file contents.</p>
+<pre>
+commonName=
+DN=$countryName$stateOrProvinceName$localityName
+DN=$DN$organizationName$organizationalUnitName$commonName
+echo $DN
+serverfqdn=www.example.com
+emailaddr=postmaster@htt-consult.com
+export subjectAltName="DNS:$serverfqdn, email:$emailaddr"
+echo $subjectAltName
+openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
+    -pkeyopt ec_param_enc:named_curve\
+    -out $dir/private/$serverfqdn.key.$format
+chmod 400 $dir/private/$serverfqdn.$format
+openssl pkey -in $dir/private/$serverfqdn.key.$format -text -noout
+openssl req -config $dir/openssl-intermediate.cnf\
+    -key $dir/private/$serverfqdn.key.$format \
+    -subj "$DN" -new -sha256 -out $dir/csr/$serverfqdn.csr.$format
+
+openssl req -text -noout -verify -in $dir/csr/$serverfqdn.csr.$format
+
+openssl rand -hex $sn &gt; $dir/serial # hex 8 is minimum, 19 is maximum
+# Note 'openssl ca' does not support DER format
+openssl ca -config $dir/openssl-intermediate.cnf -days 375\
+    -extensions server_cert -notext -md sha256 \
+    -in $dir/csr/$serverfqdn.csr.$format\
+    -out $dir/certs/$serverfqdn.cert.$format
+chmod 444 $dir/certs/$serverfqdn.cert.$format
+
+openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
+     $dir/certs/$serverfqdn.cert.$format
+openssl x509 -noout -text -in $dir/certs/$serverfqdn.cert.$format
+
+</pre>
+<h1 id="rfc.section.5.4">
+<a href="#rfc.section.5.4">5.4.</a> <a href="#ClientCert" id="ClientCert">Create a Client EE Certificate</a>
+</h1>
+<p id="rfc.section.5.4.p.1">Here are the openssl commands to create a Client End Entity certificate keypair, Client certificate signed request (CSR), and the Client certificate.  Included are commands to view the file contents.</p>
+<pre>
+commonName=
+UserID="/UID=rgm"
+DN=$countryName$stateOrProvinceName$localityName
+DN=$DN$organizationName$organizationalUnitName$commonName$UserID
+echo $DN
+clientemail=rgm@example.com
+export subjectAltName="email:$clientemail"
+echo $subjectAltName
+openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
+    -pkeyopt ec_param_enc:named_curve\
+    -out $dir/private/$clientemail.key.$format
+chmod 400 $dir/private/$clientemail.$format
+openssl pkey -in $dir/private/$clientemail.key.$format -text -noout
+openssl req -config $dir/openssl-intermediate.cnf\
+    -key $dir/private/$clientemail.key.$format \
+    -subj "$DN" -new -sha256 -out $dir/csr/$clientemail.csr.$format
+
+openssl req -text -noout -verify\
+    -in $dir/csr/$clientemail.csr.$format
+
+openssl rand -hex $sn &gt; $dir/serial # hex 8 is minimum, 19 is maximum
+# Note 'openssl ca' does not support DER format
+openssl ca -config $dir/openssl-intermediate.cnf -days 375\
+    -extensions usr_cert -notext -md sha256 \
+    -in $dir/csr/$clientemail.csr.$format\
+    -out $dir/certs/$clientemail.cert.$format
+chmod 444 $dir/certs/$clientemail.cert.$format
+
+openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
+     $dir/certs/$clientemail.cert.$format
+openssl x509 -noout -text -in $dir/certs/$clientemail.cert.$format
+
+</pre>
+<h1 id="rfc.section.6">
+<a href="#rfc.section.6">6.</a> <a href="#Intermediate8021ARLevel" id="Intermediate8021ARLevel">The 802.1AR Intermediate level</a>
+</h1>
+<h1 id="rfc.section.6.1">
+<a href="#rfc.section.6.1">6.1.</a> <a href="#Step8021AR" id="Step8021AR">Setting up the 802.1AR Intermediate Certificate Environment</a>
+</h1>
+<p id="rfc.section.6.1.p.1">The next part is to create the 802.1AR Intermediate pki environment.  This is very similar to the Intermediate pki environment.  Modify the variables to suit your needs.</p>
+<pre>
+export dir=$cadir/8021ARintermediate
+mkdir $dir
+cd $dir
+mkdir certs crl csr newcerts private
+chmod 700 private
+touch index.txt
+sn=8 # hex 8 is minimum, 19 is maximum
+echo 1000 &gt; $dir/crlnumber
+
+# cd $dir
+countryName="/C=US"
+stateOrProvinceName="/ST=MI"
+localityName="/L=Oak Park"
+organizationName="/O=HTT Consulting"
+organizationalUnitName="/OU=Devices"
+#organizationalUnitName=
+commonName="/CN=802.1AR CA"
+DN=$countryName$stateOrProvinceName$localityName$organizationName
+DN=$DN$organizationalUnitName$commonName
+echo $DN
+export subjectAltName=email:postmaster@htt-consult.com
+echo $subjectAltName
+
+</pre>
+<p id="rfc.section.6.1.p.2">Create the file, $dir/openssl-8021AR.cnf from the contents in <a href="#Intermediate8021ARconfig" class="xref">Appendix A.3</a>.</p>
+<h1 id="rfc.section.6.2">
+<a href="#rfc.section.6.2">6.2.</a> <a href="#Intermediate8021ARCert" id="Intermediate8021ARCert">Create the 802.1AR Intermediate Certificate</a>
+</h1>
+<p id="rfc.section.6.2.p.1">Here are the openssl commands to create the 802.1AR Intermediate certificate keypair, 802.1AR Intermediate certificate signed request (CSR), and the 802.1AR Intermediate certificate.  Included are commands to view the file contents.</p>
+<pre>
+# Create passworded keypair file
+
+openssl genpkey -aes256 -algorithm ec\
+    -pkeyopt ec_paramgen_curve:prime256v1 \
+    -outform $format -pkeyopt ec_param_enc:named_curve\
+    -out $dir/private/8021ARintermediate.key.$format
+chmod 400 $dir/private/8021ARintermediate.key.$format
+openssl pkey -inform $format\
+    -in $dir/private/8021ARintermediate.key.$format -text -noout
+
+# Create the CSR
+
+openssl req -config $cadir/openssl-root.cnf\
+    -key $dir/private/8021ARintermediate.key.$format \
+    -keyform $format -outform $format -subj "$DN" -new -sha256\
+    -out $dir/csr/8021ARintermediate.csr.$format
+openssl req -text -noout -verify -inform $format\
+    -in $dir/csr/8021ARintermediate.csr.$format
+
+
+# Create 802.1AR Intermediate Certificate file
+# The following does NOT work for DER
+
+openssl rand -hex $sn &gt; $dir/serial # hex 8 is minimum, 19 is maximum
+# Note 'openssl ca' does not support DER format
+openssl ca -config $cadir/openssl-root.cnf -days 3650\
+    -extensions v3_intermediate_ca -notext -md sha256\
+    -in $dir/csr/8021ARintermediate.csr.$format\
+    -out $dir/certs/8021ARintermediate.cert.pem
+
+chmod 444 $dir/certs/8021ARintermediate.cert.$format
+
+openssl verify -CAfile $cadir/certs/ca.cert.$format\
+     $dir/certs/8021ARintermediate.cert.$format
+
+openssl x509 -noout -text\
+     -in $dir/certs/8021ARintermediate.cert.$format
+
+# Create the certificate chain file
+
+cat $dir/certs/8021ARintermediate.cert.$format\
+   $cadir/certs/ca.cert.$format &gt; $dir/certs/ca-chain.cert.$format
+chmod 444 $dir/certs/ca-chain.cert.$format
+
+</pre>
+<h1 id="rfc.section.6.3">
+<a href="#rfc.section.6.3">6.3.</a> <a href="#Cert8021AR" id="Cert8021AR">Create an 802.1AR iDevID Certificate</a>
+</h1>
+<p id="rfc.section.6.3.p.1">Here are the openssl commands to create a 802.1AR iDevID certificate keypair, iDevID certificate signed request (CSR), and the iDevID certificate.  Included are commands to view the file contents.</p>
+<pre>
+DevID=Wt1234
+countryName=
+stateOrProvinceName=
+localityName=
+organizationName="/O=HTT Consulting"
+organizationalUnitName="/OU=Devices"
+commonName=
+serialNumber="/serialNumber=$DevID"
+DN=$countryName$stateOrProvinceName$localityName
+DN=$DN$organizationName$organizationalUnitName$commonName
+DN=$DN$serialNumber
+echo $DN
+
+# hwType is OID for HTT Consulting, devices, sensor widgets
+export hwType=1.3.6.1.4.1.6715.10.1
+export hwSerialNum=01020304 # Some hex
+echo  $hwType - $hwSerialNum
+
+openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
+    -pkeyopt ec_param_enc:named_curve\
+    -out $dir/private/$DevID.key.$format
+chmod 400 $dir/private/$DevID.$format
+openssl pkey -in $dir/private/$DevID.key.$format -text -noout
+openssl req -config $dir/openssl-8021AR.cnf\
+    -key $dir/private/$DevID.key.$format \
+    -subj "$DN" -new -sha256 -out $dir/csr/$DevID.csr.$format
+
+openssl req -text -noout -verify\
+    -in $dir/csr/$DevID.csr.$format
+openssl asn1parse -i -in $dir/csr/$DevID.csr.pem
+# offset of start of hardwareModuleName and use that in place of 189
+openssl asn1parse -i -strparse 189 -in $dir/csr/$DevID.csr.pem
+
+openssl rand -hex $sn &gt; $dir/serial # hex 8 is minimum, 19 is maximum
+# Note 'openssl ca' does not support DER format
+openssl ca -config $dir/openssl-8021AR.cnf -days 375\
+    -extensions 8021ar_idevid -notext -md sha256 \
+    -in $dir/csr/$DevID.csr.$format\
+    -out $dir/certs/$DevID.cert.$format
+chmod 444 $dir/certs/$DevID.cert.$format
+
+openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
+     $dir/certs/$DevID.cert.$format
+openssl x509 -noout -text -in $dir/certs/$DevID.cert.$format
+openssl asn1parse -i -in $dir/certs/$DevID.cert.pem
+
+# offset of start of hardwareModuleName and use that in place of 493
+openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
+
+</pre>
+<h1 id="rfc.section.7">
+<a href="#rfc.section.7">7.</a> <a href="#Footnotes" id="Footnotes">Footnotes</a>
+</h1>
+<p id="rfc.section.7.p.1">Creating this document was a real education in the state of openSSL, X.509 certificate guidance, and just general level of certificate awareness.  Here are a few short notes.</p>
+<h1 id="rfc.section.7.1">
+<a href="#rfc.section.7.1">7.1.</a> <a href="#SerNum" id="SerNum">Certificate Serial Number</a>
+</h1>
+<p id="rfc.section.7.1.p.1">The certificate serial number&#8217;s role is to provide yet another way to maintain uniqueness of certificates within a pki as well as a way to index them in a data store.  It has taken on other roles, most notably as a defense.</p>
+<p id="rfc.section.7.1.p.2">The CABForum guideline for a public CA is for the serial number to be a random number at least 8 octets long and no longer than 20 bytes. By default, openssl makes self-signed certificates with 8 octet serial numbers.  This guide uses openssl&#8217;s RAND function to generate the random value and pipe it into the -set_serial option.  This number MAY have the first bit as a ONE; the DER encoding rules prepend such numbers with 0x00.  Thus the limit of &#8216;19&#8217; for the variable &#8216;ns&#8217;.</p>
+<p id="rfc.section.7.1.p.3">A private CA need not follow the CABForum rules and can use anything number for the serial number.  For example, the root CA (which has no security risks mitigated by using a random value) could use &#8216;1&#8217; as its serial number.  Intermediate and End Entity certificate serial numbers can also be of any value if a strong hash, like SHA256 used here.  A value of 4 for ns would provide a sufficient population so that a CA of 10,000 EE certificates will have only a 1.2% probability of a collision.  For only 1,000 certificates the probability drops to 0.012%.</p>
+<p id="rfc.section.7.1.p.4">The following was proposed on the openssl-user list as an alternative to using the RAND function:</p>
+<p id="rfc.section.7.1.p.5">Keep k bits (k/8 octets) long serial numbers for all your certificates, chose a block cipher operating on blocks of k bits, and operate this block cipher in CTR mode, with a proper secret key and secret starting counter. That way, no collision detection is necessary, you&#8217;ll be able to generate 2^(k/2) unique k bits longs serial numbers (in fact, you can generate 2^k unique serial numbers, but after 2^(k/2) you lose some security guarantees).</p>
+<p id="rfc.section.7.1.p.6">With 3DES, k=64, and with AES, k=128.</p>
+<h1 id="rfc.section.7.2">
+<a href="#rfc.section.7.2">7.2.</a> <a href="#SAN" id="SAN">subjectAltName support, or lack thereof</a>
+</h1>
+<p id="rfc.section.7.2.p.1">There is no direct openssl command line option to provide a subjectAltName for a certificate.  This is a serious limitation.  Per <a href="#RFC2818" class="xref">RFC 2818</a> SAN is the object for providing email addresses and DNS addresses (FQDN), yet the common practice has been to use the commonName object within the distinguishedName object.  How much of this is due to the difficulty in creating certificates with a SAN?</p>
+<p id="rfc.section.7.2.p.2">Thus the only way to provide a SAN is through the config file.  And there are two approaches.  This document uses an environment variable to provide the SAN value into the config file.  Another approach is to use piping as in:</p>
+<pre>
+openssl req -new -sha256 -key domain.key\
+ -subj "/C=US/ST=CA/O=Acme, Inc./CN=foo.com" -reqexts SAN\
+  -config &lt;(cat /etc/ssl/openssl.cnf\
+   &lt;(printf "[SAN]\nsubjectAltName=DNS:foo.com,DNS:www.foo.com"))\
+  -out domain.csr
+
+</pre>
+<h1 id="rfc.section.7.3">
+<a href="#rfc.section.7.3">7.3.</a> <a href="#DER" id="DER">DER support, or lack thereof</a>
+</h1>
+<p id="rfc.section.7.3.p.1">The long, hard-fought battle with openssl to create a full DER pki failed.  The is no facility to create a DER certificate from a DER CSR.  It just is not there in the &#8216;openssl ca&#8217; command.  Even the &#8216;openssl x509 -req&#8217; command cannot do this for a simple certificate.</p>
+<p id="rfc.section.7.3.p.2">Further, there is no &#8216;hack&#8217; for making a certificate chain as there is with PEM.  With PEM a simple concatenation of the certificates create a usable certificate chain.  For DER, some recommend using <a href="#RFC2315" class="xref">PKCS#7</a>, where others point out that this format is poorly support &#8216;in the field&#8217;, whereas <a href="#RFC7292" class="xref">PKCS#12</a> works for them.</p>
+<p id="rfc.section.7.3.p.3">Finally, openssl does supports converting a PEM certificate to DER:</p>
+<pre>
+openssl x509 -outform der -in certificate.pem -out certificate.der
+
+</pre>
+<p id="rfc.section.7.3.p.4">This should also work for the keypair.  However, in a highly constrained device it may make more sense to just store the raw keypair in the device&#8217;s very limited secure storage.</p>
+<h1 id="rfc.section.8">
+<a href="#rfc.section.8">8.</a> <a href="#IANA" id="IANA">IANA Considerations</a>
+</h1>
+<p id="rfc.section.8.p.1">TBD.  May be nothing for IANA.</p>
+<h1 id="rfc.section.9">
+<a href="#rfc.section.9">9.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a>
+</h1>
+<p id="rfc.section.9.p.1">Creating certificates takes a lot of random numbers.  A good source of random numbers is critical.  Studies have found excessive amount of certificates, all with the same keys due to bad randomness on the generating systems.  The amount of entropy available for these random numbers can be tested.  On Fedora/Centos use:</p>
+<pre>
+cat /proc/sys/kernel/random/entropy_avail
+</pre>
+<p id="rfc.section.9.p.2">If the value is low (below 1000) check your system&#8217;s randomness source.  Is rng-tools installed?  Consider adding an entropy collection service like haveged from issihosts.com/haveged.</p>
+<p id="rfc.section.9.p.3">During the certificate creation, particularly during keypair generation, the files are vulnerable to theft.  This can be mitigate using umask.  Before using openssl, set umask:</p>
+<pre>
+restore_mask=$(umask -p)
+umask 077
+</pre>
+<p id="rfc.section.9.p.4">Afterwards, restore it with:</p>
+<pre>
+$restore_mask
+</pre>
+<h1 id="rfc.section.10">
+<a href="#rfc.section.10">10.</a> <a href="#acknowledgments" id="acknowledgments">Acknowledgments</a>
+</h1>
+<p id="rfc.section.10.p.1">This work was jump started by the excellent RSA pki guide by Jamie Nguyen.  The openssl-user mailing list, with its many supportive experts; in particular:  Rich Salz, Jakob Bolm, Viktor Dukhovni, and Erwann Abalea, was of immense help as was the openssl man pages website.</p>
+<p id="rfc.section.10.p.2">Finally, &#8220;Professor Google&#8221; was always ready to point to answers to questions like: &#8220;openssl subjectAltName on the command line&#8221;.  And the Professor, it seems, never tires of answering even trivial questions.</p>
+<h1 id="rfc.references">
+<a href="#rfc.references">11.</a> References</h1>
+<h1 id="rfc.references.1">
+<a href="#rfc.references.1">11.1.</a> Normative References</h1>
+<table><tbody><tr>
+<td class="reference"><b id="RFC2119">[RFC2119]</b></td>
+<td class="top">
+<a>Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+</tr></tbody></table>
+<h1 id="rfc.references.2">
+<a href="#rfc.references.2">11.2.</a> Informative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="RFC2315">[RFC2315]</b></td>
+<td class="top">
+<a>Kaliski, B.</a>, "<a href="http://tools.ietf.org/html/rfc2315">PKCS #7: Cryptographic Message Syntax Version 1.5</a>", RFC 2315, DOI 10.17487/RFC2315, March 1998.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC2818">[RFC2818]</b></td>
+<td class="top">
+<a>Rescorla, E.</a>, "<a href="http://tools.ietf.org/html/rfc2818">HTTP Over TLS</a>", RFC 2818, DOI 10.17487/RFC2818, May 2000.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC7292">[RFC7292]</b></td>
+<td class="top">
+<a>Moriarty, K.</a>, <a>Nystrom, M.</a>, <a>Parkinson, S.</a>, <a>Rusch, A.</a> and <a>M. Scott</a>, "<a href="http://tools.ietf.org/html/rfc7292">PKCS #12: Personal Information Exchange Syntax v1.1</a>", RFC 7292, DOI 10.17487/RFC7292, July 2014.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.appendix.A">
+<a href="#rfc.appendix.A">Appendix A.</a> <a href="#config" id="config">OpenSSL config files</a>
+</h1>
+<h1 id="rfc.appendix.A.1">
+<a href="#rfc.appendix.A.1">A.1.</a> <a href="#Rootconfig" id="Rootconfig">OpenSSL Root config file</a>
+</h1>
+<p id="rfc.section.A.1.p.1">The following is the openssl-root.cnf file contents</p>
+<pre>
+# OpenSSL root CA configuration file.
+# Copy to `$dir/openssl.cnf`.
+
+[ ca ]
+# `man ca`
+default_ca = CA_default
+
+[ CA_default ]
+# Directory and file locations.
+dir               = $ENV::dir
+cadir             = $ENV::cadir
+format            = $ENV::format
+
+certs             = $dir/certs
+crl_dir           = $dir/crl
+new_certs_dir     = $dir/newcerts
+database          = $dir/index.txt
+serial            = $dir/serial
+RANDFILE          = $dir/private/.rand
+
+# The root key and root certificate.
+private_key       = $cadir/private/ca.key.$format
+certificate       = $cadir/certs/ca.cert.$format
+
+# For certificate revocation lists.
+crlnumber         = $dir/crlnumber
+crl               = $dir/crl/ca.crl.pem
+crl_extensions    = crl_ext
+default_crl_days  = 30
+
+# SHA-1 is deprecated, so use SHA-2 instead.
+default_md        = sha256
+
+name_opt          = ca_default
+cert_opt          = ca_default
+default_days      = 375
+preserve          = no
+policy            = policy_strict
+copy_extensions   = copy
+
+[ policy_strict ]
+# The root CA should only sign intermediate certificates that match.
+# See the POLICY FORMAT section of `man ca`.
+countryName             = match
+stateOrProvinceName     = match
+organizationName        = match
+organizationalUnitName  = optional
+commonName              = optional
+
+[ policy_loose ]
+# Allow the intermediate CA to sign a more
+#   diverse range of certificates.
+# See the POLICY FORMAT section of the `ca` man page.
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = optional
+
+[ req ]
+# Options for the `req` tool (`man req`).
+default_bits        = 2048
+distinguished_name  = req_distinguished_name
+string_mask         = utf8only
+req_extensions      = req_ext
+
+# SHA-1 is deprecated, so use SHA-2 instead.
+default_md          = sha256
+
+# Extension to add when the -x509 option is used.
+x509_extensions     = v3_ca
+
+[ req_distinguished_name ]
+# See &lt;https://en.wikipedia.org/wiki/Certificate_signing_request&gt;.
+countryName                     = Country Name (2 letter code)
+stateOrProvinceName             = State or Province Name
+localityName                    = Locality Name
+0.organizationName              = Organization Name
+organizationalUnitName          = Organizational Unit Name
+commonName                      = Common Name
+
+# Optionally, specify some defaults.
+# countryName_default             = US
+# stateOrProvinceName_default     = MI
+# localityName_default            = Oak Park
+# 0.organizationName_default      = HTT Consulting
+# organizationalUnitName_default  =
+
+[ req_ext ]
+subjectAltName = $ENV::subjectAltName
+
+[ v3_ca ]
+# Extensions for a typical CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true
+# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+keyUsage = critical, cRLSign, keyCertSign
+subjectAltName = $ENV::subjectAltName
+
+[ v3_intermediate_ca ]
+# Extensions for a typical intermediate CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:0
+# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+keyUsage = critical, cRLSign, keyCertSign
+
+[ crl_ext ]
+# Extension for CRLs (`man x509v3_config`).
+authorityKeyIdentifier=keyid:always
+
+[ ocsp ]
+# Extension for OCSP signing certificates (`man ocsp`).
+basicConstraints = CA:FALSE
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, digitalSignature
+extendedKeyUsage = critical, OCSPSigning
+
+</pre>
+<h1 id="rfc.appendix.A.2">
+<a href="#rfc.appendix.A.2">A.2.</a> <a href="#Intermediateconfig" id="Intermediateconfig">OpenSSL Intermediate config file</a>
+</h1>
+<p id="rfc.section.A.2.p.1">The following is the openssl-intermediate.cnf file contents</p>
+<pre>
+# OpenSSL intermediate CA configuration file.
+# Copy to `$dir/intermediate/openssl.cnf`.
+
+[ ca ]
+# `man ca`
+default_ca = CA_default
+
+[ CA_default ]
+# Directory and file locations.
+dir               = $ENV::dir
+cadir             = $ENV::cadir
+format            = $ENV::format
+
+certs             = $dir/certs
+crl_dir           = $dir/crl
+new_certs_dir     = $dir/newcerts
+database          = $dir/index.txt
+serial            = $dir/serial
+RANDFILE          = $dir/private/.rand
+
+# The Intermediate key and Intermediate certificate.
+private_key       = $dir/private/intermediate.key.$format
+certificate       = $dir/certs/intermediate.cert.$format
+
+# For certificate revocation lists.
+crlnumber         = $dir/crlnumber
+crl               = $dir/crl/ca.crl.pem
+crl_extensions    = crl_ext
+default_crl_days  = 30
+
+# SHA-1 is deprecated, so use SHA-2 instead.
+default_md        = sha256
+
+name_opt          = ca_default
+cert_opt          = ca_default
+default_days      = 375
+preserve          = no
+policy            = policy_loose
+copy_extensions   = copy
+
+[ policy_strict ]
+# The root CA should only sign intermediate certificates that match.
+# See the POLICY FORMAT section of `man ca`.
+countryName             = match
+stateOrProvinceName     = match
+organizationName        = match
+organizationalUnitName  = optional
+commonName              = optional
+
+[ policy_loose ]
+# Allow the intermediate CA to sign a more
+#  diverse range of certificates.
+# See the POLICY FORMAT section of the `ca` man page.
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = optional
+UID                     = optional
+
+[ req ]
+# Options for the `req` tool (`man req`).
+default_bits        = 2048
+distinguished_name  = req_distinguished_name
+string_mask         = utf8only
+req_extensions      = req_ext
+
+# SHA-1 is deprecated, so use SHA-2 instead.
+default_md          = sha256
+
+# Extension to add when the -x509 option is used.
+x509_extensions     = v3_ca
+
+[ req_distinguished_name ]
+# See &lt;https://en.wikipedia.org/wiki/Certificate_signing_request&gt;.
+countryName                     = Country Name (2 letter code)
+stateOrProvinceName             = State or Province Name
+localityName                    = Locality Name
+0.organizationName              = Organization Name
+organizationalUnitName          = Organizational Unit Name
+commonName                      = Common Name
+UID                             = User ID
+
+# Optionally, specify some defaults.
+# countryName_default             = US
+# stateOrProvinceName_default     = MI
+# localityName_default            = Oak Park
+# 0.organizationName_default      = HTT Consulting
+# organizationalUnitName_default  =
+
+[ req_ext ]
+subjectAltName = $ENV::subjectAltName
+
+[ v3_ca ]
+# Extensions for a typical CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true
+# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+keyUsage = critical, cRLSign, keyCertSign
+
+[ v3_intermediate_ca ]
+# Extensions for a typical intermediate CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:0
+# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+keyUsage = critical, cRLSign, keyCertSign
+
+[ usr_cert ]
+# Extensions for client certificates (`man x509v3_config`).
+basicConstraints = CA:FALSE
+nsCertType = client, email
+nsComment = "OpenSSL Generated Client Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical,nonRepudiation,digitalSignature,keyEncipherment
+extendedKeyUsage = clientAuth, emailProtection
+
+[ server_cert ]
+# Extensions for server certificates (`man x509v3_config`).
+basicConstraints = CA:FALSE
+nsCertType = server
+nsComment = "OpenSSL Generated Server Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+
+[ crl_ext ]
+# Extension for CRLs (`man x509v3_config`).
+authorityKeyIdentifier=keyid:always
+
+[ ocsp ]
+# Extension for OCSP signing certificates (`man ocsp`).
+basicConstraints = CA:FALSE
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, digitalSignature
+extendedKeyUsage = critical, OCSPSigning
+
+</pre>
+<h1 id="rfc.appendix.A.3">
+<a href="#rfc.appendix.A.3">A.3.</a> <a href="#Intermediate8021ARconfig" id="Intermediate8021ARconfig">OpenSSL 802.1AR Intermediate config file</a>
+</h1>
+<p id="rfc.section.A.3.p.1">The following is the openssl-8021ARintermediate.cnf file contents</p>
+<pre>
+# OpenSSL 8021ARintermediate CA configuration file.
+# Copy to `$dir/8021ARintermediate/openssl_8021AR.cnf`.
+
+[ ca ]
+# `man ca`
+default_ca = CA_default
+
+[ CA_default ]
+# Directory and file locations.
+# dir               = /root/ca/8021ARintermediate
+dir               = $ENV::dir
+cadir             = $ENV::cadir
+format            = $ENV::format
+
+certs             = $dir/certs
+crl_dir           = $dir/crl
+new_certs_dir     = $dir/newcerts
+database          = $dir/index.txt
+serial            = $dir/serial
+RANDFILE          = $dir/private/.rand
+
+# The root key and root certificate.
+private_key       = $dir/private/8021ARintermediate.key.$format
+certificate       = $dir/certs/8021ARintermediate.cert.$format
+
+# For certificate revocation lists.
+crlnumber         = $dir/crlnumber
+crl               = $dir/crl/ca.crl.pem
+crl_extensions    = crl_ext
+default_crl_days  = 30
+
+# SHA-1 is deprecated, so use SHA-2 instead.
+default_md        = sha256
+
+name_opt          = ca_default
+cert_opt          = ca_default
+default_enddate   = 99991231235959Z # per IEEE 802.1AR
+preserve          = no
+policy            = policy_loose
+copy_extensions   = copy
+
+[ policy_strict ]
+# The root CA should only sign 8021ARintermediate
+#   certificates that match.
+# See the POLICY FORMAT section of `man ca`.
+countryName             = match
+stateOrProvinceName     = match
+organizationName        = match
+organizationalUnitName  = optional
+commonName              = optional
+
+[ policy_loose ]
+# Allow the 8021ARintermediate CA to sign
+#   a more diverse range of certificates.
+# See the POLICY FORMAT section of the `ca` man page.
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = optional
+serialNumber            = optional
+
+[ req ]
+# Options for the `req` tool (`man req`).
+default_bits        = 2048
+distinguished_name  = req_distinguished_name
+string_mask         = utf8only
+req_extensions      = req_ext
+
+# SHA-1 is deprecated, so use SHA-2 instead.
+default_md          = sha256
+
+# Extension to add when the -x509 option is used.
+x509_extensions     = v3_ca
+
+[ req_distinguished_name ]
+# See &lt;https://en.wikipedia.org/wiki/Certificate_signing_request&gt;.
+countryName                     = Country Name (2 letter code)
+stateOrProvinceName             = State or Province Name
+localityName                    = Locality Name
+0.organizationName              = Organization Name
+organizationalUnitName          = Organizational Unit Name
+commonName                      = Common Name
+serialNumber                    = Device Serial Number
+
+# Optionally, specify some defaults.
+0.organizationName_default      = HTT Consulting
+organizationalUnitName_default  = Devices
+
+[ req_ext ]
+subjectAltName = otherName:1.3.6.1.5.5.7.8.4;SEQ:hmodname
+
+[ hmodname ]
+hwType = OID:$ENV::hwType
+hwSerialNum = FORMAT:HEX,OCT:$ENV::hwSerialNum
+
+[ v3_ca ]
+# Extensions for a typical CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+
+[ v3_8021ARintermediate_ca ]
+# Extensions for a typical
+#   8021ARintermediate CA (`man x509v3_config`).
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:0
+# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+keyUsage = critical, cRLSign, keyCertSign
+
+[ 8021ar_idevid ]
+# Extensions for IEEE 802.1AR iDevID
+#   certificates (`man x509v3_config`).
+basicConstraints = CA:FALSE
+authorityKeyIdentifier = keyid,issuer:always
+keyUsage = critical, digitalSignature, keyEncipherment
+
+[ crl_ext ]
+# Extension for CRLs (`man x509v3_config`).
+authorityKeyIdentifier=keyid:always
+
+[ ocsp ]
+# Extension for OCSP signing certificates (`man ocsp`).
+basicConstraints = CA:FALSE
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, digitalSignature
+extendedKeyUsage = critical, OCSPSigning
+
+</pre>
+<h1 id="rfc.authors"><a href="#rfc.authors">Authors' Addresses</a></h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Robert Moskowitz</span> 
+	  <span class="n hidden">
+		<span class="family-name">Moskowitz</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Huawei</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality">Oak Park</span>,  
+		<span class="region">MI</span> 
+		<span class="code">48237</span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:rgm@labs.htt-consult.com">rgm@labs.htt-consult.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Henk Birkholz</span> 
+	  <span class="n hidden">
+		<span class="family-name">Birkholz</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Fraunhofer SIT</span>
+	<span class="adr">
+	  <span class="vcardline">Rheinstrasse 75</span>
+
+	  <span class="vcardline">
+		<span class="locality">Darmstadt</span>,  
+		<span class="region"></span>
+		<span class="code">64295</span>
+	  </span>
+	  <span class="country-name vcardline">Germany</span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:henk.birkholz@sit.fraunhofer.de">henk.birkholz@sit.fraunhofer.de</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Liang Xia</span> 
+	  <span class="n hidden">
+		<span class="family-name">Xia</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Huawei</span>
+	<span class="adr">
+	  <span class="vcardline">No. 101, Software Avenue, Yuhuatai District</span>
+
+	  <span class="vcardline">
+		<span class="locality">Nanjing</span>,  
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline">China</span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:Frank.xialiang@huawei.com">Frank.xialiang@huawei.com</a></span>
+
+  </address>
+</div>
+
+  <div class="github-fork-ribbon-wrapper"><div class="github-fork-ribbon"><a href="https://github.com/henkbirkholz/draft-moskowitz-ecdsa-pki">Fork me on GitHub</a></div></div>
+</body>
+</html>
