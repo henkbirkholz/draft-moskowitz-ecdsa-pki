@@ -80,7 +80,7 @@ to create such a PKI of ECDSA certificates. The goal is that
 any developer or tester can follow these steps, create the
 basic objects needed and establish the validity of the
 standard/program design. This guide can even be used to create
-a production PKi, though additional steps need to be taken.
+a production PKI, though additional steps need to be taken.
 This could be very useful to a small vendor needing to include
 802.1AR iDevIDs in their product.
 
@@ -91,6 +91,7 @@ support is for future work.
 
 
 # Terms and Definitions {#terms}
+
 
 ## Requirements Terminology
 
@@ -110,10 +111,9 @@ This section will contain notations
 TBD
 
 
+# The Basic PKI Feature Set {#BasicPKI}
 
-# The Basic PKI feature set {#BasicPKI}
-
-A basic pki has two levels of hierarchy: Root and Intermediate. The
+A basic PKI has two levels of hierarchy: Root and Intermediate. The
 Root level has the greatest risk, and is the least used. It only
 signs the Intermediate level signing certificate. As such, once
 the Root level is created and signs the Intermediate level
@@ -123,7 +123,7 @@ a RaspberryPi. A copy of this card came be made and securely
 stored in a different location.
 
 The Root level contains the Root certificate private key, a
-database of all signed certificates, and  the public certificate.
+database of all signed certificates, and the public certificate.
 It can also contain the Intermediate level public certificate and a
 Root level CRL.
 
@@ -131,14 +131,14 @@ The Intermediate level contains the Intermediate certificate
 private key, the public certificate, a database of all signed
 certificates, the certificate trust chain, and Intermediate level
 CRL. It can also contain the End Entity public certificates. The
-private key file needs to be keep securely. For example as with
+private key file needs to be kept securely. For example as with
 the Root level, a mSD image for an ARM computer could contain the
 complete Intermediate level. This image is kept offline. The End
 Entity CSR is copied to it, signed, and then the signed certificate
 and updated database are moved to the public image that lacks the
 private key.
 
-For a simple test pki, all files can be kept on a single system
+For a simple test PKI, all files can be kept on a single system
 that is managed by the tester.
 
 End Entities create a key pair and a Certificate Signing Request
@@ -147,11 +147,11 @@ to the Intermediate level which uses the CSR to create the End
 Entity certificate. This certificate, along with the trust chain
 back to the root, is then returned to the End Entity.
 
-There is more to a pki, but this suffices for most development and
+There is more to a PKI, but this suffices for most development and
 testing needs.
 
 
-# Getting started and the Root level {#RootLevel}
+# Getting Started and the Root Level {#RootLevel}
 
 This guide was developed on a Fedora 26 armv7hl system (Cubieboard2
 SoC). It should work on most Linux and similar systems. All work
@@ -159,11 +159,11 @@ was done in a terminal window with extensive "cutting and pasting"
 from a draft guide into the terminal window. Users of this guide
 may find different behaviors based on their system.
 
+
 ## Setting up the Environment {#FirstStep}
 
-The first step is to create the pki environment. Modify the
+The first step is to create the PKI environment. Modify the
 variables to suit your needs.
-
 
 ~~~~
 export dir=/root/ca
@@ -188,27 +188,30 @@ DN=$countryName$stateOrProvinceName$localityName
 DN=$DN$organizationName$organizationalUnitName$commonName
 echo $DN
 export subjectAltName=email:postmaster@htt-consult.com
-
 ~~~~
 
 Where:
 
-dir
+dir:
+
 : Directory for certificate files
 
-cadir
+cadir:
+
 : Directory for Root certificate files
 
-Format
-: File encoding:  PEM or DER <vspace />
+format:
+
+: File encoding: PEM or DER <vspace />
   At this time only PEM works
 
-sn
+sn:
+
 : Serial Number length in bytes <vspace />
   For a public CA the range is 8 to 19
 {: hangIndent='9' vspace='0'}
 
-The Serial Number length for a public pki ranges from 8 to 19
+The Serial Number length for a public PKI ranges from 8 to 19
 bytes. The use of 19 rather than 20 is to accommodate the hex
 representation of the Serial Number. If it has a one in the high
 order bit, DER encoding rules will place a 0x00 in front.
@@ -226,9 +229,8 @@ Next are the openssl commands to create the Root certificate
 keypair, and the Root certificate. Included are commands to view
 the file contents.
 
-
 ~~~~
-# Create passworded keypair file
+# Create Passworded Keypair File
 
 openssl genpkey -aes256 -algorithm ec\
     -pkeyopt ec_paramgen_curve:prime256v1\
@@ -253,18 +255,16 @@ openssl x509 -inform $format -in $dir/certs/ca.cert.$format\
      -text -noout
 openssl x509 -purpose -inform $format\
      -in $dir/certs/ca.cert.$format -inform $format
-
 ~~~~
 
 
+# The Intermediate Level {#IntermediateLevel}
 
-# The Intermediate level {#IntermediateLevel}
 
 ## Setting up the Intermediate Certificate Environment {#NextStep}
 
-The next part is to create the Intermediate pki environment.
+The next part is to create the Intermediate PKI environment.
 Modify the variables to suit your needs.
-
 
 ~~~~
 export dir=$cadir/intermediate
@@ -281,7 +281,6 @@ commonName="/CN=Signing CA"
 DN=$countryName$stateOrProvinceName$localityName$organizationName
 DN=$DN$organizationalUnitName$commonName
 echo $DN
-
 ~~~~
 
 Create the file, $dir/openssl-intermediate.cnf from the contents in {{Intermediateconfig}}.
@@ -296,7 +295,7 @@ the file contents.
 
 
 ~~~~
-# Create passworded keypair file
+# Create Passworded Keypair File
 
 openssl genpkey -aes256 -algorithm ec\
     -pkeyopt ec_paramgen_curve:prime256v1 \
@@ -316,7 +315,7 @@ openssl req -text -noout -verify -inform $format\
     -in $dir/csr/intermediate.csr.$format
 
 
-# Create Intermediate Certificate file
+# Create Intermediate Certificate File
 
 openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
 # Note 'openssl ca' does not support DER format
@@ -337,8 +336,6 @@ openssl x509 -noout -text -in $dir/certs/intermediate.cert.$format
 cat $dir/certs/intermediate.cert.$format\
    $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
 chmod 444 $dir/certs/ca-chain.cert.$format
-
-
 ~~~~
 
 
@@ -348,7 +345,6 @@ Here are the openssl commands to create a Server End Entity
 certificate keypair, Server certificate signed request (CSR),
 and the Server certificate. Included are commands to view
 the file contents.
-
 
 ~~~~
 commonName=
@@ -381,7 +377,6 @@ chmod 444 $dir/certs/$serverfqdn.cert.$format
 openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
      $dir/certs/$serverfqdn.cert.$format
 openssl x509 -noout -text -in $dir/certs/$serverfqdn.cert.$format
-
 ~~~~
 
 
@@ -391,7 +386,6 @@ Here are the openssl commands to create a Client End Entity
 certificate keypair, Client certificate signed request (CSR),
 and the Client certificate. Included are commands to view
 the file contents.
-
 
 ~~~~
 commonName=
@@ -429,15 +423,14 @@ openssl x509 -noout -text -in $dir/certs/$clientemail.cert.$format
 ~~~~
 
 
-
 # The 802.1AR Intermediate level {#Intermediate8021ARLevel}
+
 
 ## Setting up the 802.1AR Intermediate Certificate Environment {#Step8021AR}
 
-The next part is to create the 802.1AR Intermediate pki
-environment. This is very similar to the Intermediate pki
+The next part is to create the 802.1AR Intermediate PKI
+environment. This is very similar to the Intermediate PKI
 environment. Modify the variables to suit your needs.
-
 
 ~~~~
 export dir=$cadir/8021ARintermediate
@@ -520,7 +513,6 @@ openssl x509 -noout -text\
 cat $dir/certs/8021ARintermediate.cert.$format\
    $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
 chmod 444 $dir/certs/ca-chain.cert.$format
-
 ~~~~
 
 
@@ -530,7 +522,6 @@ Here are the openssl commands to create a 802.1AR iDevID
 certificate keypair, iDevID certificate signed request (CSR), and
 the iDevID certificate. Included are commands to view the file
 contents.
-
 
 ~~~~
 DevID=Wt1234
@@ -581,9 +572,7 @@ openssl asn1parse -i -in $dir/certs/$DevID.cert.pem
 
 # offset of start of hardwareModuleName and use that in place of 493
 openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
-
 ~~~~
-
 
 
 # Footnotes {#Footnotes}
@@ -595,7 +584,7 @@ certificate awareness. Here are a few short notes.
 ## Certificate Serial Number {#SerNum}
 
 The certificate serial number's role is to provide yet another way
-to maintain uniqueness of certificates within a pki as well as a
+to maintain uniqueness of certificates within a PKI as well as a
 way to index them in a data store. It has taken on other roles,
 most notably as a defense.
 
@@ -653,9 +642,7 @@ openssl req -new -sha256 -key domain.key\
   -config <(cat /etc/ssl/openssl.cnf\
    <(printf "[SAN]\nsubjectAltName=DNS:foo.com,DNS:www.foo.com"))\
   -out domain.csr
-
 ~~~~
-
 
 
 ## DER support, or lack thereof {#DER}
@@ -675,12 +662,11 @@ Finally, openssl does supports converting a PEM certificate to DER:
 
 ~~~~
 openssl x509 -outform der -in certificate.pem -out certificate.der
-
 ~~~~
+
 This should also work for the keypair. However, in a highly
 constrained device it may make more sense to just store the raw
 keypair in the device's very limited secure storage.
-
 
 
 # IANA Considerations {#IANA}
@@ -700,7 +686,6 @@ random numbers can be tested. On Fedora/Centos use:
 cat /proc/sys/kernel/random/entropy_avail
 ~~~~
 
-
 If the value is low (below 1000) check your system's randomness
 source. Is rng-tools installed?  Consider adding an entropy
 collection service like haveged from issihosts.com/haveged.
@@ -713,12 +698,12 @@ mitigate using umask. Before using openssl, set umask:
 restore_mask=$(umask -p)
 umask 077
 ~~~~
+
 Afterwards, restore it with:
 
 ~~~~
 $restore_mask
 ~~~~
-
 
 
 # Acknowledgments
@@ -869,10 +854,9 @@ extendedKeyUsage = critical, OCSPSigning
 ~~~~
 
 
-## OpenSSL Intermediate config file {#Intermediateconfig}
+## OpenSSL Intermediate Config File {#Intermediateconfig}
 
 The following is the openssl-intermediate.cnf file contents
-
 
 ~~~~
 # OpenSSL intermediate CA configuration file.
@@ -926,7 +910,7 @@ commonName              = optional
 
 [ policy_loose ]
 # Allow the intermediate CA to sign a more
-#  diverse range of certificates.
+# diverse range of certificates.
 # See the POLICY FORMAT section of the `ca` man page.
 countryName             = optional
 stateOrProvinceName     = optional
@@ -1016,14 +1000,12 @@ subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer
 keyUsage = critical, digitalSignature
 extendedKeyUsage = critical, OCSPSigning
-
 ~~~~
 
 
 ## OpenSSL 802.1AR Intermediate config file {#Intermediate8021ARconfig}
 
 The following is the openssl-8021ARintermediate.cnf file contents
-
 
 ~~~~
 # OpenSSL 8021ARintermediate CA configuration file.
@@ -1157,5 +1139,4 @@ subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer
 keyUsage = critical, digitalSignature
 extendedKeyUsage = critical, OCSPSigning
-
 ~~~~
