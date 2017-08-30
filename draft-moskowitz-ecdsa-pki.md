@@ -54,8 +54,8 @@ informative:
 
 
 This memo provides a guide for building a PKI (Public Key
-Infrastructure) using openSSL.  All certificates in this guide are
-ECDSA, P-256, with SHA256 certificates.  Along with common End
+Infrastructure) using openSSL. All certificates in this guide are
+ECDSA, P-256, with SHA256 certificates. Along with common End
 Entity certificates, this guide provides instructions for creating
 IEEE 802.1AR iDevID Secure
 Device certificates.
@@ -66,7 +66,7 @@ Device certificates.
 
 The IETF has a plethora of security solutions targeted at IoT.
 Yet all too many IoT products are deployed with no or
-improperly configured security.  In particular resource
+improperly configured security. In particular resource
 constrained IoT devices and non-IP IoT networks have not been
 well served in the IETF.
 
@@ -76,16 +76,16 @@ these identities other than to recommend use of X.509 digital
 certificates and perhaps TLS.
 
 This effort provides the steps, using the openSSL application,
-to create such a PKI of ECDSA certificates.  The goal is that
+to create such a PKI of ECDSA certificates. The goal is that
 any developer or tester can follow these steps, create the
 basic objects needed and establish the validity of the
-standard/program design.  This guide can even be used to create
+standard/program design. This guide can even be used to create
 a production PKi, though additional steps need to be taken.
 This could be very useful to a small vendor needing to include
 802.1AR iDevIDs in their product.
 
 This guide was tested with openSSL 1.1.0f on Fedora 26 and
-creates PEM-based certificates.  DER based certificates fails
+creates PEM-based certificates. DER based certificates fails
 (see {{DER}}). Also, at this time, CRL and OCSP
 support is for future work.
 
@@ -114,12 +114,12 @@ TBD
 # The Basic PKI feature set {#BasicPKI}
 
 A basic pki has two levels of hierarchy: Root and Intermediate. The
-Root level has the greatest risk, and is the least used.  It only
-signs the Intermediate level signing certificate.  As such, once
+Root level has the greatest risk, and is the least used. It only
+signs the Intermediate level signing certificate. As such, once
 the Root level is created and signs the Intermediate level
-certificate it can be locked up.  In fact, the Root level could
+certificate it can be locked up. In fact, the Root level could
 exist completely on a mSD boot card for an ARM small computer like
-a RaspberryPi.  A copy of this card came be made and securely
+a RaspberryPi. A copy of this card came be made and securely
 stored in a different location.
 
 The Root level contains the Root certificate private key, a
@@ -130,10 +130,10 @@ Root level CRL.
 The Intermediate level contains the Intermediate certificate
 private key, the public certificate, a database of all signed
 certificates, the certificate trust chain, and Intermediate level
-CRL.  It can also contain the End Entity public certificates.  The
-private key file needs to be keep securely.  For example as with
+CRL. It can also contain the End Entity public certificates. The
+private key file needs to be keep securely. For example as with
 the Root level, a mSD image for an ARM computer could contain the
-complete Intermediate level. This image is kept offline.  The End
+complete Intermediate level. This image is kept offline. The End
 Entity CSR is copied to it, signed, and then the signed certificate
 and updated database are moved to the public image that lacks the
 private key.
@@ -142,9 +142,9 @@ For a simple test pki, all files can be kept on a single system
 that is managed by the tester.
 
 End Entities create a key pair and a Certificate Signing Request
-(CSR).  The private key is stored securely.  The CSR is delivered
+(CSR). The private key is stored securely. The CSR is delivered
 to the Intermediate level which uses the CSR to create the End
-Entity certificate.  This certificate, along with the trust chain
+Entity certificate. This certificate, along with the trust chain
 back to the root, is then returned to the End Entity.
 
 There is more to a pki, but this suffices for most development and
@@ -154,14 +154,14 @@ testing needs.
 # Getting started and the Root level {#RootLevel}
 
 This guide was developed on a Fedora 26 armv7hl system (Cubieboard2
-SoC).  It should work on most Linux and similar systems.  All work
+SoC). It should work on most Linux and similar systems. All work
 was done in a terminal window with extensive "cutting and pasting"
-from a draft guide into the terminal window.  Users of this guide
+from a draft guide into the terminal window. Users of this guide
 may find different behaviors based on their system.
 
 ## Setting up the Environment {#FirstStep}
 
-The first step is to create the pki environment.  Modify the
+The first step is to create the pki environment. Modify the
 variables to suit your needs.
 
 
@@ -209,13 +209,13 @@ sn
 {: hangIndent='9' vspace='0'}
 
 The Serial Number length for a public pki ranges from 8 to 19
-bytes.  The use of 19 rather than 20 is to accommodate the hex
-representation of the Serial Number.  If it has a one in the high
+bytes. The use of 19 rather than 20 is to accommodate the hex
+representation of the Serial Number. If it has a one in the high
 order bit, DER encoding rules will place a 0x00 in front.
 
-The DN and SAN fields are examples.  Change them to appropriate
-values.  If you leave one blank, it will be left out of the
-Certificate.  "OU" above is an example of an empty DN object.
+The DN and SAN fields are examples. Change them to appropriate
+values. If you leave one blank, it will be left out of the
+Certificate. "OU" above is an example of an empty DN object.
 
 Create the file, $dir/openssl-root.cnf from the contents in {{Rootconfig}}.
 
@@ -223,7 +223,7 @@ Create the file, $dir/openssl-root.cnf from the contents in {{Rootconfig}}.
 ## Create the Root Certificate {#RootCert}
 
 Next are the openssl commands to create the Root certificate
-keypair, and the Root certificate.  Included are commands to view
+keypair, and the Root certificate. Included are commands to view
 the file contents.
 
 
@@ -291,7 +291,7 @@ Create the file, $dir/openssl-intermediate.cnf from the contents in {{Intermedia
 
 Here are the openssl commands to create the Intermediate
 certificate keypair, Intermediate certificate signed request (CSR),
-and the Intermediate certificate.  Included are commands to view
+and the Intermediate certificate. Included are commands to view
 the file contents.
 
 
@@ -346,7 +346,7 @@ chmod 444 $dir/certs/ca-chain.cert.$format
 
 Here are the openssl commands to create a Server End Entity
 certificate keypair, Server certificate signed request (CSR),
-and the Server certificate.  Included are commands to view
+and the Server certificate. Included are commands to view
 the file contents.
 
 
@@ -389,7 +389,7 @@ openssl x509 -noout -text -in $dir/certs/$serverfqdn.cert.$format
 
 Here are the openssl commands to create a Client End Entity
 certificate keypair, Client certificate signed request (CSR),
-and the Client certificate.  Included are commands to view
+and the Client certificate. Included are commands to view
 the file contents.
 
 
@@ -435,8 +435,8 @@ openssl x509 -noout -text -in $dir/certs/$clientemail.cert.$format
 ## Setting up the 802.1AR Intermediate Certificate Environment {#Step8021AR}
 
 The next part is to create the 802.1AR Intermediate pki
-environment.  This is very similar to the Intermediate pki
-environment.  Modify the variables to suit your needs.
+environment. This is very similar to the Intermediate pki
+environment. Modify the variables to suit your needs.
 
 
 ~~~~
@@ -472,7 +472,7 @@ Create the file, $dir/openssl-8021AR.cnf from the contents in {{Intermediate8021
 
 Here are the openssl commands to create the 802.1AR Intermediate
 certificate keypair, 802.1AR Intermediate certificate signed
-request (CSR), and the 802.1AR Intermediate certificate.  Included
+request (CSR), and the 802.1AR Intermediate certificate. Included
 are commands to view the file contents.
 
 
@@ -528,7 +528,7 @@ chmod 444 $dir/certs/ca-chain.cert.$format
 
 Here are the openssl commands to create a 802.1AR iDevID
 certificate keypair, iDevID certificate signed request (CSR), and
-the iDevID certificate.  Included are commands to view the file
+the iDevID certificate. Included are commands to view the file
 contents.
 
 
@@ -590,32 +590,32 @@ openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
 
 Creating this document was a real education in the state of
 openSSL, X.509 certificate guidance, and just general level of
-certificate awareness.  Here are a few short notes.
+certificate awareness. Here are a few short notes.
 
 ## Certificate Serial Number {#SerNum}
 
 The certificate serial number's role is to provide yet another way
 to maintain uniqueness of certificates within a pki as well as a
-way to index them in a data store.  It has taken on other roles,
+way to index them in a data store. It has taken on other roles,
 most notably as a defense.
 
 The CABForum guideline for a public CA is for the serial number to
 be a random number at least 8 octets long and no longer than 20
 bytes. By default, openssl makes self-signed certificates with 8
-octet serial numbers.  This guide uses openssl's RAND function to
+octet serial numbers. This guide uses openssl's RAND function to
 generate the random value and pipe it into the -set_serial option.
 This number MAY have the first bit as a ONE; the DER encoding rules
-prepend such numbers with 0x00.  Thus the limit of '19' for the
+prepend such numbers with 0x00. Thus the limit of '19' for the
 variable 'ns'.
 
 A private CA need not follow the CABForum rules and can use
-anything number for the serial number.  For example, the root CA
+anything number for the serial number. For example, the root CA
 (which has no security risks mitigated by using a random value)
-could use '1' as its serial number.  Intermediate and End Entity
+could use '1' as its serial number. Intermediate and End Entity
 certificate serial numbers can also be of any value if a strong
-hash, like SHA256 used here.  A value of 4 for ns would provide a
+hash, like SHA256 used here. A value of 4 for ns would provide a
 sufficient population so that a CA of 10,000 EE certificates will
-have only a 1.2% probability of a collision.  For only 1,000
+have only a 1.2% probability of a collision. For only 1,000
 certificates the probability drops to 0.012%.
 
 The following was proposed on the openssl-user list as an
@@ -635,16 +635,16 @@ With 3DES, k=64, and with AES, k=128.
 ## subjectAltName support, or lack thereof {#SAN}
 
 There is no direct openssl command line option to provide a
-subjectAltName for a certificate.  This is a serious limitation.
+subjectAltName for a certificate. This is a serious limitation.
 Per [RFC 2818](#RFC2818) SAN is the object for
 providing email addresses and DNS addresses (FQDN), yet the common
 practice has been to use the commonName object within the
-distinguishedName object.  How much of this is due to the
+distinguishedName object. How much of this is due to the
 difficulty in creating certificates with a SAN?
 
-Thus the only way to provide a SAN is through the config file.  And
-there are two approaches.  This document uses an environment
-variable to provide the SAN value into the config file.  Another
+Thus the only way to provide a SAN is through the config file. And
+there are two approaches. This document uses an environment
+variable to provide the SAN value into the config file. Another
 approach is to use piping as in:
 
 ~~~~
@@ -661,13 +661,13 @@ openssl req -new -sha256 -key domain.key\
 ## DER support, or lack thereof {#DER}
 
 The long, hard-fought battle with openssl to create a full DER pki
-failed.  The is no facility to create a DER certificate from a DER
-CSR.  It just is not there in the 'openssl ca' command.  Even the
+failed. The is no facility to create a DER certificate from a DER
+CSR. It just is not there in the 'openssl ca' command. Even the
 'openssl x509 -req' command cannot do this for a simple certificate.
 
 Further, there is no 'hack' for making a certificate chain as there is
-with PEM.  With PEM a simple concatenation of the certificates create
-a usable certificate chain.  For DER, some recommend using
+with PEM. With PEM a simple concatenation of the certificates create
+a usable certificate chain. For DER, some recommend using
 [PKCS#7](#RFC2315), where others point out that this format is poorly
 support 'in the field', whereas [PKCS#12](#RFC7292) works for them.
 
@@ -677,7 +677,7 @@ Finally, openssl does supports converting a PEM certificate to DER:
 openssl x509 -outform der -in certificate.pem -out certificate.der
 
 ~~~~
-This should also work for the keypair.  However, in a highly
+This should also work for the keypair. However, in a highly
 constrained device it may make more sense to just store the raw
 keypair in the device's very limited secure storage.
 
@@ -685,16 +685,16 @@ keypair in the device's very limited secure storage.
 
 # IANA Considerations {#IANA}
 
-TBD.  May be nothing for IANA.
+TBD. May be nothing for IANA.
 
 
 # Security Considerations
 
-Creating certificates takes a lot of random numbers.  A good source
-of random numbers is critical.  Studies have found excessive amount
+Creating certificates takes a lot of random numbers. A good source
+of random numbers is critical. Studies have found excessive amount
 of certificates, all with the same keys due to bad randomness on
-the generating systems.  The amount of entropy available for these
-random numbers can be tested.  On Fedora/Centos use:
+the generating systems. The amount of entropy available for these
+random numbers can be tested. On Fedora/Centos use:
 
 ~~~~
 cat /proc/sys/kernel/random/entropy_avail
@@ -702,12 +702,12 @@ cat /proc/sys/kernel/random/entropy_avail
 
 
 If the value is low (below 1000) check your system's randomness
-source.  Is rng-tools installed?  Consider adding an entropy
+source. Is rng-tools installed?  Consider adding an entropy
 collection service like haveged from issihosts.com/haveged.
 
 During the certificate creation, particularly during keypair
-generation, the files are vulnerable to theft.  This can be
-mitigate using umask.  Before using openssl, set umask:
+generation, the files are vulnerable to theft. This can be
+mitigate using umask. Before using openssl, set umask:
 
 ~~~~
 restore_mask=$(umask -p)
@@ -724,13 +724,13 @@ $restore_mask
 # Acknowledgments
 
 This work was jump started by the excellent RSA pki guide by Jamie
-Nguyen.  The openssl-user mailing list, with its many supportive
+Nguyen. The openssl-user mailing list, with its many supportive
 experts; in particular:  Rich Salz, Jakob Bolm, Viktor Dukhovni,
 and Erwann Abalea, was of immense help as was the openssl man pages
 website.
 
 Finally, "Professor Google" was always ready to point to answers to
-questions like: "openssl subjectAltName on the command line".  And
+questions like: "openssl subjectAltName on the command line". And
 the Professor, it seems, never tires of answering even trivial
 questions.
 
