@@ -11,7 +11,7 @@ Expires: March 3, 2018                                    Fraunhofer SIT
                                                          August 30, 2017
 
 
-                     Guide for building an ECC pki
+                     Guide for building an ECC PKI
                     draft-moskowitz-ecdsa-pki-latest
 
 Abstract
