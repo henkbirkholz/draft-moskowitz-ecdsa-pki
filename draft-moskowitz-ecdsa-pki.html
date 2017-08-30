@@ -316,8 +316,8 @@ address {
   <meta name="dct.creator" content="Moskowitz, R., Birkholz, H., and L. Xia" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-moskowitz-ecdsa-pki-latest" />
   <meta name="dct.issued" scheme="ISO8601" content="2017-8-30" />
-  <meta name="dct.abstract" content="This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL.  All certificates in this guide are ECDSA, P-256, with SHA256 certificates.  Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates." />
-  <meta name="description" content="This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL.  All certificates in this guide are ECDSA, P-256, with SHA256 certificates.  Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates." />
+  <meta name="dct.abstract" content="This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL. All certificates in this guide are ECDSA, P-256, with SHA256 certificates. Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates." />
+  <meta name="description" content="This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL. All certificates in this guide are ECDSA, P-256, with SHA256 certificates. Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates." />
 
 </head>
 
@@ -363,7 +363,7 @@ address {
   <span class="filename">draft-moskowitz-ecdsa-pki-latest</span></p>
   
   <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
-<p>This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL.  All certificates in this guide are ECDSA, P-256, with SHA256 certificates.  Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates.</p>
+<p>This memo provides a guide for building a PKI (Public Key Infrastructure) using openSSL. All certificates in this guide are ECDSA, P-256, with SHA256 certificates. Along with common End Entity certificates, this guide provides instructions for creating IEEE 802.1AR iDevID Secure Device certificates.</p>
 <h1 id="rfc.status"><a href="#rfc.status">Status of This Memo</a></h1>
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
@@ -451,10 +451,10 @@ address {
   <h1 id="rfc.section.1">
 <a href="#rfc.section.1">1.</a> <a href="#intro" id="intro">Introduction</a>
 </h1>
-<p id="rfc.section.1.p.1">The IETF has a plethora of security solutions targeted at IoT.  Yet all too many IoT products are deployed with no or improperly configured security.  In particular resource constrained IoT devices and non-IP IoT networks have not been well served in the IETF.</p>
+<p id="rfc.section.1.p.1">The IETF has a plethora of security solutions targeted at IoT.  Yet all too many IoT products are deployed with no or improperly configured security. In particular resource constrained IoT devices and non-IP IoT networks have not been well served in the IETF.</p>
 <p id="rfc.section.1.p.2">Additionally, more IETF (e.g. DOTS, NETCONF) efforts are requiring secure identities, but are vague on the nature of these identities other than to recommend use of X.509 digital certificates and perhaps TLS.</p>
-<p id="rfc.section.1.p.3">This effort provides the steps, using the openSSL application, to create such a PKI of ECDSA certificates.  The goal is that any developer or tester can follow these steps, create the basic objects needed and establish the validity of the standard/program design.  This guide can even be used to create a production PKi, though additional steps need to be taken.  This could be very useful to a small vendor needing to include 802.1AR iDevIDs in their product.</p>
-<p id="rfc.section.1.p.4">This guide was tested with openSSL 1.1.0f on Fedora 26 and creates PEM-based certificates.  DER based certificates fails (see <a href="#DER" class="xref">Section 7.3</a>). Also, at this time, CRL and OCSP support is for future work.</p>
+<p id="rfc.section.1.p.3">This effort provides the steps, using the openSSL application, to create such a PKI of ECDSA certificates. The goal is that any developer or tester can follow these steps, create the basic objects needed and establish the validity of the standard/program design. This guide can even be used to create a production PKi, though additional steps need to be taken.  This could be very useful to a small vendor needing to include 802.1AR iDevIDs in their product.</p>
+<p id="rfc.section.1.p.4">This guide was tested with openSSL 1.1.0f on Fedora 26 and creates PEM-based certificates. DER based certificates fails (see <a href="#DER" class="xref">Section 7.3</a>). Also, at this time, CRL and OCSP support is for future work.</p>
 <h1 id="rfc.section.2">
 <a href="#rfc.section.2">2.</a> <a href="#terms" id="terms">Terms and Definitions</a>
 </h1>
@@ -473,20 +473,20 @@ address {
 <h1 id="rfc.section.3">
 <a href="#rfc.section.3">3.</a> <a href="#BasicPKI" id="BasicPKI">The Basic PKI feature set</a>
 </h1>
-<p id="rfc.section.3.p.1">A basic pki has two levels of hierarchy: Root and Intermediate. The Root level has the greatest risk, and is the least used.  It only signs the Intermediate level signing certificate.  As such, once the Root level is created and signs the Intermediate level certificate it can be locked up.  In fact, the Root level could exist completely on a mSD boot card for an ARM small computer like a RaspberryPi.  A copy of this card came be made and securely stored in a different location.</p>
+<p id="rfc.section.3.p.1">A basic pki has two levels of hierarchy: Root and Intermediate. The Root level has the greatest risk, and is the least used. It only signs the Intermediate level signing certificate. As such, once the Root level is created and signs the Intermediate level certificate it can be locked up. In fact, the Root level could exist completely on a mSD boot card for an ARM small computer like a RaspberryPi. A copy of this card came be made and securely stored in a different location.</p>
 <p id="rfc.section.3.p.2">The Root level contains the Root certificate private key, a database of all signed certificates, and  the public certificate.  It can also contain the Intermediate level public certificate and a Root level CRL.</p>
-<p id="rfc.section.3.p.3">The Intermediate level contains the Intermediate certificate private key, the public certificate, a database of all signed certificates, the certificate trust chain, and Intermediate level CRL.  It can also contain the End Entity public certificates.  The private key file needs to be keep securely.  For example as with the Root level, a mSD image for an ARM computer could contain the complete Intermediate level. This image is kept offline.  The End Entity CSR is copied to it, signed, and then the signed certificate and updated database are moved to the public image that lacks the private key.</p>
+<p id="rfc.section.3.p.3">The Intermediate level contains the Intermediate certificate private key, the public certificate, a database of all signed certificates, the certificate trust chain, and Intermediate level CRL. It can also contain the End Entity public certificates. The private key file needs to be keep securely. For example as with the Root level, a mSD image for an ARM computer could contain the complete Intermediate level. This image is kept offline. The End Entity CSR is copied to it, signed, and then the signed certificate and updated database are moved to the public image that lacks the private key.</p>
 <p id="rfc.section.3.p.4">For a simple test pki, all files can be kept on a single system that is managed by the tester.</p>
-<p id="rfc.section.3.p.5">End Entities create a key pair and a Certificate Signing Request (CSR).  The private key is stored securely.  The CSR is delivered to the Intermediate level which uses the CSR to create the End Entity certificate.  This certificate, along with the trust chain back to the root, is then returned to the End Entity.</p>
+<p id="rfc.section.3.p.5">End Entities create a key pair and a Certificate Signing Request (CSR). The private key is stored securely. The CSR is delivered to the Intermediate level which uses the CSR to create the End Entity certificate. This certificate, along with the trust chain back to the root, is then returned to the End Entity.</p>
 <p id="rfc.section.3.p.6">There is more to a pki, but this suffices for most development and testing needs.</p>
 <h1 id="rfc.section.4">
 <a href="#rfc.section.4">4.</a> <a href="#RootLevel" id="RootLevel">Getting started and the Root level</a>
 </h1>
-<p id="rfc.section.4.p.1">This guide was developed on a Fedora 26 armv7hl system (Cubieboard2 SoC).  It should work on most Linux and similar systems.  All work was done in a terminal window with extensive &#8220;cutting and pasting&#8221; from a draft guide into the terminal window.  Users of this guide may find different behaviors based on their system.</p>
+<p id="rfc.section.4.p.1">This guide was developed on a Fedora 26 armv7hl system (Cubieboard2 SoC). It should work on most Linux and similar systems. All work was done in a terminal window with extensive &#8220;cutting and pasting&#8221; from a draft guide into the terminal window. Users of this guide may find different behaviors based on their system.</p>
 <h1 id="rfc.section.4.1">
 <a href="#rfc.section.4.1">4.1.</a> <a href="#FirstStep" id="FirstStep">Setting up the Environment</a>
 </h1>
-<p id="rfc.section.4.1.p.1">The first step is to create the pki environment.  Modify the variables to suit your needs.</p>
+<p id="rfc.section.4.1.p.1">The first step is to create the pki environment. Modify the variables to suit your needs.</p>
 <pre>
 export dir=/root/ca
 export cadir=/root/ca
@@ -529,13 +529,13 @@ export subjectAltName=email:postmaster@htt-consult.com
 <dd style="margin-left: 9">
 <br> Serial Number length in bytes <br> For a public CA the range is 8 to 19</dd>
 </dl>
-<p id="rfc.section.4.1.p.4">The Serial Number length for a public pki ranges from 8 to 19 bytes.  The use of 19 rather than 20 is to accommodate the hex representation of the Serial Number.  If it has a one in the high order bit, DER encoding rules will place a 0x00 in front.</p>
-<p id="rfc.section.4.1.p.5">The DN and SAN fields are examples.  Change them to appropriate values.  If you leave one blank, it will be left out of the Certificate.  &#8220;OU&#8221; above is an example of an empty DN object.</p>
+<p id="rfc.section.4.1.p.4">The Serial Number length for a public pki ranges from 8 to 19 bytes. The use of 19 rather than 20 is to accommodate the hex representation of the Serial Number. If it has a one in the high order bit, DER encoding rules will place a 0x00 in front.</p>
+<p id="rfc.section.4.1.p.5">The DN and SAN fields are examples. Change them to appropriate values. If you leave one blank, it will be left out of the Certificate. &#8220;OU&#8221; above is an example of an empty DN object.</p>
 <p id="rfc.section.4.1.p.6">Create the file, $dir/openssl-root.cnf from the contents in <a href="#Rootconfig" class="xref">Appendix A.1</a>.</p>
 <h1 id="rfc.section.4.2">
 <a href="#rfc.section.4.2">4.2.</a> <a href="#RootCert" id="RootCert">Create the Root Certificate</a>
 </h1>
-<p id="rfc.section.4.2.p.1">Next are the openssl commands to create the Root certificate keypair, and the Root certificate.  Included are commands to view the file contents.</p>
+<p id="rfc.section.4.2.p.1">Next are the openssl commands to create the Root certificate keypair, and the Root certificate. Included are commands to view the file contents.</p>
 <pre>
 # Create passworded keypair file
 
@@ -592,7 +592,7 @@ echo $DN
 <h1 id="rfc.section.5.2">
 <a href="#rfc.section.5.2">5.2.</a> <a href="#IntermediateCert" id="IntermediateCert">Create the Intermediate Certificate</a>
 </h1>
-<p id="rfc.section.5.2.p.1">Here are the openssl commands to create the Intermediate certificate keypair, Intermediate certificate signed request (CSR), and the Intermediate certificate.  Included are commands to view the file contents.</p>
+<p id="rfc.section.5.2.p.1">Here are the openssl commands to create the Intermediate certificate keypair, Intermediate certificate signed request (CSR), and the Intermediate certificate. Included are commands to view the file contents.</p>
 <pre>
 # Create passworded keypair file
 
@@ -641,7 +641,7 @@ chmod 444 $dir/certs/ca-chain.cert.$format
 <h1 id="rfc.section.5.3">
 <a href="#rfc.section.5.3">5.3.</a> <a href="#ServerCert" id="ServerCert">Create a Server EE Certificate</a>
 </h1>
-<p id="rfc.section.5.3.p.1">Here are the openssl commands to create a Server End Entity certificate keypair, Server certificate signed request (CSR), and the Server certificate.  Included are commands to view the file contents.</p>
+<p id="rfc.section.5.3.p.1">Here are the openssl commands to create a Server End Entity certificate keypair, Server certificate signed request (CSR), and the Server certificate. Included are commands to view the file contents.</p>
 <pre>
 commonName=
 DN=$countryName$stateOrProvinceName$localityName
@@ -678,7 +678,7 @@ openssl x509 -noout -text -in $dir/certs/$serverfqdn.cert.$format
 <h1 id="rfc.section.5.4">
 <a href="#rfc.section.5.4">5.4.</a> <a href="#ClientCert" id="ClientCert">Create a Client EE Certificate</a>
 </h1>
-<p id="rfc.section.5.4.p.1">Here are the openssl commands to create a Client End Entity certificate keypair, Client certificate signed request (CSR), and the Client certificate.  Included are commands to view the file contents.</p>
+<p id="rfc.section.5.4.p.1">Here are the openssl commands to create a Client End Entity certificate keypair, Client certificate signed request (CSR), and the Client certificate. Included are commands to view the file contents.</p>
 <pre>
 commonName=
 UserID="/UID=rgm"
@@ -719,7 +719,7 @@ openssl x509 -noout -text -in $dir/certs/$clientemail.cert.$format
 <h1 id="rfc.section.6.1">
 <a href="#rfc.section.6.1">6.1.</a> <a href="#Step8021AR" id="Step8021AR">Setting up the 802.1AR Intermediate Certificate Environment</a>
 </h1>
-<p id="rfc.section.6.1.p.1">The next part is to create the 802.1AR Intermediate pki environment.  This is very similar to the Intermediate pki environment.  Modify the variables to suit your needs.</p>
+<p id="rfc.section.6.1.p.1">The next part is to create the 802.1AR Intermediate pki environment. This is very similar to the Intermediate pki environment. Modify the variables to suit your needs.</p>
 <pre>
 export dir=$cadir/8021ARintermediate
 mkdir $dir
@@ -749,7 +749,7 @@ echo $subjectAltName
 <h1 id="rfc.section.6.2">
 <a href="#rfc.section.6.2">6.2.</a> <a href="#Intermediate8021ARCert" id="Intermediate8021ARCert">Create the 802.1AR Intermediate Certificate</a>
 </h1>
-<p id="rfc.section.6.2.p.1">Here are the openssl commands to create the 802.1AR Intermediate certificate keypair, 802.1AR Intermediate certificate signed request (CSR), and the 802.1AR Intermediate certificate.  Included are commands to view the file contents.</p>
+<p id="rfc.section.6.2.p.1">Here are the openssl commands to create the 802.1AR Intermediate certificate keypair, 802.1AR Intermediate certificate signed request (CSR), and the 802.1AR Intermediate certificate. Included are commands to view the file contents.</p>
 <pre>
 # Create passworded keypair file
 
@@ -799,7 +799,7 @@ chmod 444 $dir/certs/ca-chain.cert.$format
 <h1 id="rfc.section.6.3">
 <a href="#rfc.section.6.3">6.3.</a> <a href="#Cert8021AR" id="Cert8021AR">Create an 802.1AR iDevID Certificate</a>
 </h1>
-<p id="rfc.section.6.3.p.1">Here are the openssl commands to create a 802.1AR iDevID certificate keypair, iDevID certificate signed request (CSR), and the iDevID certificate.  Included are commands to view the file contents.</p>
+<p id="rfc.section.6.3.p.1">Here are the openssl commands to create a 802.1AR iDevID certificate keypair, iDevID certificate signed request (CSR), and the iDevID certificate. Included are commands to view the file contents.</p>
 <pre>
 DevID=Wt1234
 countryName=
@@ -854,21 +854,21 @@ openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
 <h1 id="rfc.section.7">
 <a href="#rfc.section.7">7.</a> <a href="#Footnotes" id="Footnotes">Footnotes</a>
 </h1>
-<p id="rfc.section.7.p.1">Creating this document was a real education in the state of openSSL, X.509 certificate guidance, and just general level of certificate awareness.  Here are a few short notes.</p>
+<p id="rfc.section.7.p.1">Creating this document was a real education in the state of openSSL, X.509 certificate guidance, and just general level of certificate awareness. Here are a few short notes.</p>
 <h1 id="rfc.section.7.1">
 <a href="#rfc.section.7.1">7.1.</a> <a href="#SerNum" id="SerNum">Certificate Serial Number</a>
 </h1>
-<p id="rfc.section.7.1.p.1">The certificate serial number&#8217;s role is to provide yet another way to maintain uniqueness of certificates within a pki as well as a way to index them in a data store.  It has taken on other roles, most notably as a defense.</p>
-<p id="rfc.section.7.1.p.2">The CABForum guideline for a public CA is for the serial number to be a random number at least 8 octets long and no longer than 20 bytes. By default, openssl makes self-signed certificates with 8 octet serial numbers.  This guide uses openssl&#8217;s RAND function to generate the random value and pipe it into the -set_serial option.  This number MAY have the first bit as a ONE; the DER encoding rules prepend such numbers with 0x00.  Thus the limit of &#8216;19&#8217; for the variable &#8216;ns&#8217;.</p>
-<p id="rfc.section.7.1.p.3">A private CA need not follow the CABForum rules and can use anything number for the serial number.  For example, the root CA (which has no security risks mitigated by using a random value) could use &#8216;1&#8217; as its serial number.  Intermediate and End Entity certificate serial numbers can also be of any value if a strong hash, like SHA256 used here.  A value of 4 for ns would provide a sufficient population so that a CA of 10,000 EE certificates will have only a 1.2% probability of a collision.  For only 1,000 certificates the probability drops to 0.012%.</p>
+<p id="rfc.section.7.1.p.1">The certificate serial number&#8217;s role is to provide yet another way to maintain uniqueness of certificates within a pki as well as a way to index them in a data store. It has taken on other roles, most notably as a defense.</p>
+<p id="rfc.section.7.1.p.2">The CABForum guideline for a public CA is for the serial number to be a random number at least 8 octets long and no longer than 20 bytes. By default, openssl makes self-signed certificates with 8 octet serial numbers. This guide uses openssl&#8217;s RAND function to generate the random value and pipe it into the -set_serial option.  This number MAY have the first bit as a ONE; the DER encoding rules prepend such numbers with 0x00. Thus the limit of &#8216;19&#8217; for the variable &#8216;ns&#8217;.</p>
+<p id="rfc.section.7.1.p.3">A private CA need not follow the CABForum rules and can use anything number for the serial number. For example, the root CA (which has no security risks mitigated by using a random value) could use &#8216;1&#8217; as its serial number. Intermediate and End Entity certificate serial numbers can also be of any value if a strong hash, like SHA256 used here. A value of 4 for ns would provide a sufficient population so that a CA of 10,000 EE certificates will have only a 1.2% probability of a collision. For only 1,000 certificates the probability drops to 0.012%.</p>
 <p id="rfc.section.7.1.p.4">The following was proposed on the openssl-user list as an alternative to using the RAND function:</p>
 <p id="rfc.section.7.1.p.5">Keep k bits (k/8 octets) long serial numbers for all your certificates, chose a block cipher operating on blocks of k bits, and operate this block cipher in CTR mode, with a proper secret key and secret starting counter. That way, no collision detection is necessary, you&#8217;ll be able to generate 2^(k/2) unique k bits longs serial numbers (in fact, you can generate 2^k unique serial numbers, but after 2^(k/2) you lose some security guarantees).</p>
 <p id="rfc.section.7.1.p.6">With 3DES, k=64, and with AES, k=128.</p>
 <h1 id="rfc.section.7.2">
 <a href="#rfc.section.7.2">7.2.</a> <a href="#SAN" id="SAN">subjectAltName support, or lack thereof</a>
 </h1>
-<p id="rfc.section.7.2.p.1">There is no direct openssl command line option to provide a subjectAltName for a certificate.  This is a serious limitation.  Per <a href="#RFC2818" class="xref">RFC 2818</a> SAN is the object for providing email addresses and DNS addresses (FQDN), yet the common practice has been to use the commonName object within the distinguishedName object.  How much of this is due to the difficulty in creating certificates with a SAN?</p>
-<p id="rfc.section.7.2.p.2">Thus the only way to provide a SAN is through the config file.  And there are two approaches.  This document uses an environment variable to provide the SAN value into the config file.  Another approach is to use piping as in:</p>
+<p id="rfc.section.7.2.p.1">There is no direct openssl command line option to provide a subjectAltName for a certificate. This is a serious limitation.  Per <a href="#RFC2818" class="xref">RFC 2818</a> SAN is the object for providing email addresses and DNS addresses (FQDN), yet the common practice has been to use the commonName object within the distinguishedName object. How much of this is due to the difficulty in creating certificates with a SAN?</p>
+<p id="rfc.section.7.2.p.2">Thus the only way to provide a SAN is through the config file. And there are two approaches. This document uses an environment variable to provide the SAN value into the config file. Another approach is to use piping as in:</p>
 <pre>
 openssl req -new -sha256 -key domain.key\
  -subj "/C=US/ST=CA/O=Acme, Inc./CN=foo.com" -reqexts SAN\
@@ -880,27 +880,27 @@ openssl req -new -sha256 -key domain.key\
 <h1 id="rfc.section.7.3">
 <a href="#rfc.section.7.3">7.3.</a> <a href="#DER" id="DER">DER support, or lack thereof</a>
 </h1>
-<p id="rfc.section.7.3.p.1">The long, hard-fought battle with openssl to create a full DER pki failed.  The is no facility to create a DER certificate from a DER CSR.  It just is not there in the &#8216;openssl ca&#8217; command.  Even the &#8216;openssl x509 -req&#8217; command cannot do this for a simple certificate.</p>
-<p id="rfc.section.7.3.p.2">Further, there is no &#8216;hack&#8217; for making a certificate chain as there is with PEM.  With PEM a simple concatenation of the certificates create a usable certificate chain.  For DER, some recommend using <a href="#RFC2315" class="xref">PKCS#7</a>, where others point out that this format is poorly support &#8216;in the field&#8217;, whereas <a href="#RFC7292" class="xref">PKCS#12</a> works for them.</p>
+<p id="rfc.section.7.3.p.1">The long, hard-fought battle with openssl to create a full DER pki failed. The is no facility to create a DER certificate from a DER CSR. It just is not there in the &#8216;openssl ca&#8217; command. Even the &#8216;openssl x509 -req&#8217; command cannot do this for a simple certificate.</p>
+<p id="rfc.section.7.3.p.2">Further, there is no &#8216;hack&#8217; for making a certificate chain as there is with PEM. With PEM a simple concatenation of the certificates create a usable certificate chain. For DER, some recommend using <a href="#RFC2315" class="xref">PKCS#7</a>, where others point out that this format is poorly support &#8216;in the field&#8217;, whereas <a href="#RFC7292" class="xref">PKCS#12</a> works for them.</p>
 <p id="rfc.section.7.3.p.3">Finally, openssl does supports converting a PEM certificate to DER:</p>
 <pre>
 openssl x509 -outform der -in certificate.pem -out certificate.der
 
 </pre>
-<p id="rfc.section.7.3.p.4">This should also work for the keypair.  However, in a highly constrained device it may make more sense to just store the raw keypair in the device&#8217;s very limited secure storage.</p>
+<p id="rfc.section.7.3.p.4">This should also work for the keypair. However, in a highly constrained device it may make more sense to just store the raw keypair in the device&#8217;s very limited secure storage.</p>
 <h1 id="rfc.section.8">
 <a href="#rfc.section.8">8.</a> <a href="#IANA" id="IANA">IANA Considerations</a>
 </h1>
-<p id="rfc.section.8.p.1">TBD.  May be nothing for IANA.</p>
+<p id="rfc.section.8.p.1">TBD. May be nothing for IANA.</p>
 <h1 id="rfc.section.9">
 <a href="#rfc.section.9">9.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a>
 </h1>
-<p id="rfc.section.9.p.1">Creating certificates takes a lot of random numbers.  A good source of random numbers is critical.  Studies have found excessive amount of certificates, all with the same keys due to bad randomness on the generating systems.  The amount of entropy available for these random numbers can be tested.  On Fedora/Centos use:</p>
+<p id="rfc.section.9.p.1">Creating certificates takes a lot of random numbers. A good source of random numbers is critical. Studies have found excessive amount of certificates, all with the same keys due to bad randomness on the generating systems. The amount of entropy available for these random numbers can be tested. On Fedora/Centos use:</p>
 <pre>
 cat /proc/sys/kernel/random/entropy_avail
 </pre>
-<p id="rfc.section.9.p.2">If the value is low (below 1000) check your system&#8217;s randomness source.  Is rng-tools installed?  Consider adding an entropy collection service like haveged from issihosts.com/haveged.</p>
-<p id="rfc.section.9.p.3">During the certificate creation, particularly during keypair generation, the files are vulnerable to theft.  This can be mitigate using umask.  Before using openssl, set umask:</p>
+<p id="rfc.section.9.p.2">If the value is low (below 1000) check your system&#8217;s randomness source. Is rng-tools installed?  Consider adding an entropy collection service like haveged from issihosts.com/haveged.</p>
+<p id="rfc.section.9.p.3">During the certificate creation, particularly during keypair generation, the files are vulnerable to theft. This can be mitigate using umask. Before using openssl, set umask:</p>
 <pre>
 restore_mask=$(umask -p)
 umask 077
@@ -912,8 +912,8 @@ $restore_mask
 <h1 id="rfc.section.10">
 <a href="#rfc.section.10">10.</a> <a href="#acknowledgments" id="acknowledgments">Acknowledgments</a>
 </h1>
-<p id="rfc.section.10.p.1">This work was jump started by the excellent RSA pki guide by Jamie Nguyen.  The openssl-user mailing list, with its many supportive experts; in particular:  Rich Salz, Jakob Bolm, Viktor Dukhovni, and Erwann Abalea, was of immense help as was the openssl man pages website.</p>
-<p id="rfc.section.10.p.2">Finally, &#8220;Professor Google&#8221; was always ready to point to answers to questions like: &#8220;openssl subjectAltName on the command line&#8221;.  And the Professor, it seems, never tires of answering even trivial questions.</p>
+<p id="rfc.section.10.p.1">This work was jump started by the excellent RSA pki guide by Jamie Nguyen. The openssl-user mailing list, with its many supportive experts; in particular:  Rich Salz, Jakob Bolm, Viktor Dukhovni, and Erwann Abalea, was of immense help as was the openssl man pages website.</p>
+<p id="rfc.section.10.p.2">Finally, &#8220;Professor Google&#8221; was always ready to point to answers to questions like: &#8220;openssl subjectAltName on the command line&#8221;. And the Professor, it seems, never tires of answering even trivial questions.</p>
 <h1 id="rfc.references">
 <a href="#rfc.references">11.</a> References</h1>
 <h1 id="rfc.references.1">
