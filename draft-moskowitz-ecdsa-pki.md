@@ -16,7 +16,7 @@ abbrev: PKI Guide
 area: Security Area
 wg: wg TBD
 kw: RFC
-date: 2017
+date: 2018
 author:
 - ins: R. Moskowitz
   name: Robert Moskowitz
@@ -118,7 +118,7 @@ Root level has the greatest risk, and is the least used. It only
 signs the Intermediate level signing certificate. As such, once
 the Root level is created and signs the Intermediate level
 certificate it can be locked up. In fact, the Root level could
-exist completely on a mSD boot card for an ARM small computer like
+exist completely on a microSD boot card for an ARM small computer like
 a RaspberryPi. A copy of this card came be made and securely
 stored in a different location.
 
@@ -132,11 +132,12 @@ private key, the public certificate, a database of all signed
 certificates, the certificate trust chain, and Intermediate level
 CRL. It can also contain the End Entity public certificates. The
 private key file needs to be kept securely. For example as with
-the Root level, a mSD image for an ARM computer could contain the
-complete Intermediate level. This image is kept offline. The End
-Entity CSR is copied to it, signed, and then the signed certificate
-and updated database are moved to the public image that lacks the
-private key.
+the Root level, a microSD image for an ARM computer could contain the
+complete Intermediate level. This image is kept offline.
+
+The End Entity CSR is copied to the Intermediate level CA system, signed, and
+then the signed certificate and updated database are moved to the public
+image that lacks the private key.
 
 For a simple test PKI, all files can be kept on a single system
 that is managed by the tester.
@@ -166,6 +167,7 @@ The first step is to create the PKI environment. Modify the
 variables to suit your needs.
 
 ~~~~
+<CODE BEGINS> file "setup1.sh"
 export dir=/root/ca
 export cadir=/root/ca
 export format=pem
@@ -188,6 +190,7 @@ DN=$countryName$stateOrProvinceName$localityName
 DN=$DN$organizationName$organizationalUnitName$commonName
 echo $DN
 export subjectAltName=email:postmaster@htt-consult.com
+<CODE ENDS>
 ~~~~
 
 Where:
@@ -230,6 +233,7 @@ keypair, and the Root certificate. Included are commands to view
 the file contents.
 
 ~~~~
+<CODE BEGINS> file "rootca1.sh"
 # Create Passworded Keypair File
 
 openssl genpkey -aes256 -algorithm ec\
@@ -250,11 +254,10 @@ openssl req -config $dir/openssl-root.cnf\
      -out $dir/certs/ca.cert.$format
 
 #
-
 openssl x509 -inform $format -in $dir/certs/ca.cert.$format\
      -text -noout
-openssl x509 -purpose -inform $format\
-     -in $dir/certs/ca.cert.$format -inform $format
+openssl x509 -purpose -in $dir/certs/ca.cert.$format -inform $format
+<CODE ENDS>
 ~~~~
 
 
@@ -267,6 +270,7 @@ The next part is to create the Intermediate PKI environment.
 Modify the variables to suit your needs.
 
 ~~~~
+<CODE BEGINS> file "intca1.sh"
 export dir=$cadir/intermediate
 mkdir $dir
 cd $dir
@@ -281,6 +285,7 @@ commonName="/CN=Signing CA"
 DN=$countryName$stateOrProvinceName$localityName$organizationName
 DN=$DN$organizationalUnitName$commonName
 echo $DN
+<CODE ENDS>
 ~~~~
 
 Create the file, $dir/openssl-intermediate.cnf from the contents in {{Intermediateconfig}}.
@@ -295,6 +300,7 @@ the file contents.
 
 
 ~~~~
+<CODE BEGINS> file "intca1.sh"
 # Create Passworded Keypair File
 
 openssl genpkey -aes256 -algorithm ec\
@@ -313,7 +319,6 @@ openssl req -config $cadir/openssl-root.cnf\
     -out $dir/csr/intermediate.csr.$format
 openssl req -text -noout -verify -inform $format\
     -in $dir/csr/intermediate.csr.$format
-
 
 # Create Intermediate Certificate File
 
@@ -336,6 +341,7 @@ openssl x509 -noout -text -in $dir/certs/intermediate.cert.$format
 cat $dir/certs/intermediate.cert.$format\
    $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
 chmod 444 $dir/certs/ca-chain.cert.$format
+<CODE ENDS>
 ~~~~
 
 
